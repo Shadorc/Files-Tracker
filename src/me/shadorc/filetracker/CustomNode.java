@@ -1,5 +1,6 @@
 package me.shadorc.filetracker;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,11 +18,13 @@ public class CustomNode extends DefaultMutableTreeNode {
 
 	private File file;
 	private ImageIcon icon;
+	private Color color;
 
 	public CustomNode(Object userObject, File file) {
 		super(userObject);
 		this.file = file;
 		this.icon = new ImageIcon(this.getClass().getResource("/res/" + (file.isDirectory() ? "folder" : "file") + "-icon" + (file.isHidden() ? "-hidden" : "") + ".png"));
+		this.color = Color.BLACK;
 	}
 
 	public CustomNode(Object userObject) {
@@ -35,7 +38,11 @@ public class CustomNode extends DefaultMutableTreeNode {
 	public ImageIcon getIcon() {
 		return icon;
 	}
-	
+
+	public Color getColor() {
+		return color;
+	}
+
 	public Date lastModifiedDate() {
 		return new Date(file.lastModified());
 	}

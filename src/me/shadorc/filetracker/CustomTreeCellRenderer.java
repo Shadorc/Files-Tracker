@@ -2,7 +2,6 @@ package me.shadorc.filetracker;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.io.IOException;
 import java.util.Date;
 
 import javax.swing.JLabel;
@@ -10,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 
 import me.shadorc.filetracker.Storage.Data;
 
@@ -21,7 +21,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
 		JPanel panel = new JPanel();
-		panel.setBackground(null);
+		panel.setBackground(selected ? Color.LIGHT_GRAY : null);
 
 		CustomNode node = (CustomNode) value; 
 
@@ -30,38 +30,39 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 			return panel;
 		}
 
-		String text = String.valueOf(node.getUserObject());
-
-		JLabel label = new JLabel(text);
-		label.setForeground(Color.BLACK);
-		label.setFont(Utils.getFont());
-		label.setIcon(node.getIcon());
-		panel.add(label);
-
 		//Empty file
 		if(node.getChildCount() == 1 && node.getFirstChild().toString().equals(CustomNode.EMPTY_NODE.toString()) || node.toString().equals(CustomNode.EMPTY_NODE.toString())) {
-			label.setForeground(Color.GRAY);
+			node.setColor(Color.GRAY);
 		} 
 
 		else {
 			//Recently modified
 			if(Utils.daysBetween(new Date(), node.lastModifiedDate()) <= Integer.parseInt(Storage.getData(Data.MODIFIED_TIME_DAY))) {
-				label.setForeground(new Color(255, 128, 0));
+				node.setColor(new Color(255, 128, 0));
 			}
 
 			//Recently created
 			try {
 				if(Utils.daysBetween(new Date(), node.createdDate()) <= Integer.parseInt(Storage.getData(Data.CREATED_TIME_DAY))) {
-					label.setForeground(new Color(0, 100, 0));
+					node.setColor(new Color(0, 100, 0));
 				}
 			} catch(IOException e) {
 				System.out.println("[WARNING] Get file creation time isn't supported for " + node.getFile() + " : " + e.getMessage());
 			}
 		}
 
-		if(selected) {
-			panel.setBackground(Color.LIGHT_GRAY);
+		//Set the same color for all its parents
+		if(node.getColor() != Color.BLACK) {
+			for(TreeNode parent : node.getPath()) {
+				((CustomNode) parent).setColor(node.getColor());
+			}
 		}
+
+		JLabel label = new JLabel(String.valueOf(node.getUserObject()));
+		label.setForeground(node.getColor());
+		label.setFont(Utils.getFont());
+		label.setIcon(node.getIcon());
+		panel.add(label);
 
 		return panel;
 	}
