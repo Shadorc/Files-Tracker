@@ -31,7 +31,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 		}
 
 		//Empty file
-		if(node.getChildCount() == 1 && node.getFirstChild().toString().equals(CustomNode.EMPTY_NODE.toString()) || node.toString().equals(CustomNode.EMPTY_NODE.toString())) {
+		if(node.getChildCount() == 1 && ((CustomNode) node.getFirstChild()).isEmpty() || node.isEmpty()) {
 			node.setColor(Color.GRAY);
 		} 
 
@@ -42,12 +42,10 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 			}
 
 			//Recently created
-			try {
+			if(node.createdDate() != null) {
 				if(Utils.daysBetween(new Date(), node.createdDate()) <= Integer.parseInt(Storage.getData(Data.CREATED_TIME_DAY))) {
 					node.setColor(new Color(0, 100, 0));
 				}
-			} catch(IOException e) {
-				System.out.println("[WARNING] Get file creation time isn't supported for " + node.getFile() + " : " + e.getMessage());
 			}
 		}
 

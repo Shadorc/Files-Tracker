@@ -47,8 +47,21 @@ public class CustomNode extends DefaultMutableTreeNode {
 		return new Date(file.lastModified());
 	}
 
-	public Date createdDate() throws IOException {
-		BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-		return new Date(attr.creationTime().toMillis());
+	public Date createdDate() {
+		try {
+			BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+			return new Date(attr.creationTime().toMillis());
+		} catch (IOException ignored) {
+			//			System.out.println("[WARNING] Get file creation time isn't supported for " + e.getMessage());
+		}
+		return null;
+	}
+
+	public boolean isEmpty() {
+		return this.toString().equals(EMPTY_NODE.toString());
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 }
