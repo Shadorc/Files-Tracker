@@ -28,7 +28,7 @@ public class CustomTree extends JTree {
 
 		this.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseReleased(final MouseEvent event) {
+			public void mouseReleased(MouseEvent event) {
 				TreePath path = CustomTree.this.getPathForLocation(event.getX(), event.getY());
 
 				if (path != null) {
@@ -42,7 +42,7 @@ public class CustomTree extends JTree {
 						JMenuItem openItem = new JMenuItem(new AbstractAction("Open folder") {
 							private static final long serialVersionUID = 1L;
 
-							public void actionPerformed(ActionEvent ae) {
+							public void actionPerformed(ActionEvent event) {
 								File file = ((CustomNode) CustomTree.this.getLastSelectedPathComponent()).getFile();
 								if(file != null && Desktop.isDesktopSupported()) {
 									try {
@@ -82,21 +82,6 @@ public class CustomTree extends JTree {
 
 	public void add(CustomNode parent, CustomNode child) {
 		DefaultTreeModel model = (DefaultTreeModel) this.getModel();
-		model.insertNodeInto(child, parent, this.getChildPosition(parent, child));
-	}
-
-	//TODO: todo
-	private int getChildPosition(CustomNode parent, CustomNode child) {
-		int index = 0;
-		if(child.getFile() != null) {
-			for(int i = 0; i < parent.getChildCount(); i++) {
-				File file = ((CustomNode) parent.getChildAt(i)).getFile();
-				if(child.getFile().isDirectory() && file.isDirectory() || child.getFile().isFile() && file.isFile()) {
-					index++;
-				}
-			}
-		}
-
-		return index;
+		model.insertNodeInto(child, parent, model.getChildCount(parent));
 	}
 }

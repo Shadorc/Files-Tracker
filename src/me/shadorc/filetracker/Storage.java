@@ -29,7 +29,6 @@ public class Storage {
 			prop.store(output, null);
 
 		} catch (IOException e) {
-
 			e.printStackTrace();
 
 		} finally {

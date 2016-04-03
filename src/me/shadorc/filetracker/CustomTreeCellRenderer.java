@@ -30,7 +30,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 			return panel;
 		}
 
-		String text = (String) node.getUserObject();
+		String text = String.valueOf(node.getUserObject());
 
 		JLabel label = new JLabel(text);
 		label.setForeground(Color.BLACK);
@@ -55,7 +55,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 					label.setForeground(new Color(0, 100, 0));
 				}
 			} catch(IOException e) {
-				System.out.println("[WARNING] Get file creation time isn't supported : " + e.getMessage());
+				System.out.println("[WARNING] Get file creation time isn't supported for " + node.getFile() + " : " + e.getMessage());
 			}
 		}
 

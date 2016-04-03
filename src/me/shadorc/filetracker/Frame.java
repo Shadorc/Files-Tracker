@@ -25,7 +25,7 @@ public class Frame extends JFrame {
 	private CustomTree tree;
 
 	Frame() {
-		super("Files Tracker");
+		super("Files Tracker - Bêta");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		OptionsFrame optionsFrame = new OptionsFrame();
@@ -185,9 +185,7 @@ public class Frame extends JFrame {
 
 		if(files != null) {
 			for(File child : files) {
-				long start = System.currentTimeMillis();
 				this.addFile(parent, child);
-				System.err.println((System.currentTimeMillis()-start) + " : " + directories.size());
 				if(child.isDirectory()) {
 					this.search(child);
 				}
