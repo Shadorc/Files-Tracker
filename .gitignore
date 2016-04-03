@@ -9,3 +9,6 @@ gen/
 .classpath
 .project
 .settings
+
+# Project file
+config.properties
