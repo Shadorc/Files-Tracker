@@ -43,7 +43,7 @@ public class Frame extends JFrame {
 		JPanel buttonsPanel = new JPanel(new GridLayout(1, 3));
 
 		JButton browseButton = new JButton("Browse");
-		browseButton.setFont(Main.getFont());
+		browseButton.setFont(Utils.getFont());
 		browseButton.setBackground(Color.WHITE);
 		browseButton.setForeground(Color.BLACK);
 		browseButton.addActionListener(new ActionListener() {
@@ -51,7 +51,7 @@ public class Frame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ignore) { }
+				} catch (Exception ignored) { }
 
 				JFileChooser chooser = new JFileChooser();
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -61,13 +61,13 @@ public class Frame extends JFrame {
 
 				try {
 					UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ignore) { }
+				} catch (Exception ignore) { }
 			}
 		});
 		buttonsPanel.add(browseButton);
 
 		JButton scanButton = new JButton("Scan");
-		scanButton.setFont(Main.getFont());
+		scanButton.setFont(Utils.getFont());
 		scanButton.setBackground(Color.WHITE);
 		scanButton.setForeground(Color.BLACK);
 		scanButton.addActionListener(new ActionListener() {
@@ -84,7 +84,7 @@ public class Frame extends JFrame {
 		buttonsPanel.add(scanButton);
 
 		JButton options = new JButton("Options");
-		options.setFont(Main.getFont());
+		options.setFont(Utils.getFont());
 		options.setBackground(Color.WHITE);
 		options.setForeground(Color.BLACK);
 		options.addActionListener(new ActionListener() {
@@ -109,26 +109,26 @@ public class Frame extends JFrame {
 		keysPanel.setBorder(new CompoundBorder(BorderFactory.createTitledBorder("Keys"), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
 		JLabel normalFile = new JLabel("Normal", new ImageIcon(this.getClass().getResource("/res/file-icon.png")), JLabel.LEFT);
-		normalFile.setFont(Main.getFont());
+		normalFile.setFont(Utils.getFont());
 		keysPanel.add(normalFile);
 
 		JLabel hiddenFile = new JLabel("Hidden", new ImageIcon(this.getClass().getResource("/res/file-icon-hidden.png")), JLabel.LEFT);
-		hiddenFile.setFont(Main.getFont());
+		hiddenFile.setFont(Utils.getFont());
 		keysPanel.add(hiddenFile);
 
 		JLabel emptyFile = new JLabel("Empty");
 		emptyFile.setForeground(Color.GRAY);
-		emptyFile.setFont(Main.getFont());
+		emptyFile.setFont(Utils.getFont());
 		keysPanel.add(emptyFile);
 
 		JLabel modifiedFile = new JLabel("Recently modified");
 		modifiedFile.setForeground(new Color(255, 128, 0));
-		modifiedFile.setFont(Main.getFont());
+		modifiedFile.setFont(Utils.getFont());
 		keysPanel.add(modifiedFile);
 
 		JLabel createdFile = new JLabel("Recently created");
 		createdFile.setForeground(new Color(0, 100, 0));
-		createdFile.setFont(Main.getFont());
+		createdFile.setFont(Utils.getFont());
 		keysPanel.add(createdFile);
 
 		mainPanel.add(keysPanel, BorderLayout.EAST);
@@ -139,8 +139,8 @@ public class Frame extends JFrame {
 		JPanel infoPanel = new JPanel();
 		infoPanel.setOpaque(false);
 
-		infoLabel = new JLabel("Select a folder...");
-		infoLabel.setFont(Main.getFont());
+		infoLabel = new JLabel("Select a folder to scan...");
+		infoLabel.setFont(Utils.getFont());
 		infoLabel.setForeground(Color.BLACK);		
 		infoPanel.add(infoLabel);
 
@@ -185,7 +185,9 @@ public class Frame extends JFrame {
 
 		if(files != null) {
 			for(File child : files) {
+				long start = System.currentTimeMillis();
 				this.addFile(parent, child);
+				System.err.println((System.currentTimeMillis()-start) + " : " + directories.size());
 				if(child.isDirectory()) {
 					this.search(child);
 				}
@@ -196,7 +198,7 @@ public class Frame extends JFrame {
 	private void addFile(File parent, File child) {
 		tree.expandPath(new TreePath(tree.getModel().getRoot()));
 
-		String size = child.isFile() ? "(" + humanReadableByteCount(child.length()) + ")" : "";
+		String size = child.isFile() ? "(" + Utils.toReadableByteCount(child.length()) + ")" : "";
 		CustomNode childNode = new CustomNode(child.getName() + " " + size, child);
 
 		tree.add(directories.get(parent), childNode);
@@ -216,12 +218,5 @@ public class Frame extends JFrame {
 			infoLabel.setText(filesCount + " files analyzed in " + String.format("%.1f", (System.currentTimeMillis() - startTime)/1000.0) + "s.");
 			lastUpdate = System.currentTimeMillis();
 		}
-	}
-
-	private String humanReadableByteCount(long bytes) {
-		if (bytes < 1000) return bytes + " B";
-		int exp = (int) (Math.log(bytes) / Math.log(1000));
-		char pre = "kMGTPE".charAt(exp-1);
-		return String.format("%.1f %sB", bytes / Math.pow(1000, exp), pre);
 	}
 }

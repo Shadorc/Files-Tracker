@@ -34,7 +34,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		JLabel label = new JLabel(text);
 		label.setForeground(Color.BLACK);
-		label.setFont(Main.getFont());
+		label.setFont(Utils.getFont());
 		label.setIcon(node.getIcon());
 		panel.add(label);
 
@@ -45,13 +45,13 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		else {
 			//Recently modified
-			if(Main.daysBetween(new Date(), node.lastModifiedDate()) <= Integer.parseInt(Storage.getData(Data.MODIFIED_TIME_DAY))) {
+			if(Utils.daysBetween(new Date(), node.lastModifiedDate()) <= Integer.parseInt(Storage.getData(Data.MODIFIED_TIME_DAY))) {
 				label.setForeground(new Color(255, 128, 0));
 			}
 
 			//Recently created
 			try {
-				if(Main.daysBetween(new Date(), node.createdDate()) <= Integer.parseInt(Storage.getData(Data.CREATED_TIME_DAY))) {
+				if(Utils.daysBetween(new Date(), node.createdDate()) <= Integer.parseInt(Storage.getData(Data.CREATED_TIME_DAY))) {
 					label.setForeground(new Color(0, 100, 0));
 				}
 			} catch(IOException e) {

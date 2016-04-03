@@ -45,7 +45,7 @@ public class OptionsFrame extends JFrame {
 		JPanel panel = new JPanel(new BorderLayout());
 
 		JLabel label = new JLabel(labelText);
-		label.setFont(Main.getFont());
+		label.setFont(Utils.getFont());
 		panel.add(label, BorderLayout.CENTER);
 
 		int value = (Storage.getData(data) == null) ? 0 : Integer.parseInt(Storage.getData(data));

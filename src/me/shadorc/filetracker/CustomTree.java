@@ -55,7 +55,7 @@ public class CustomTree extends JTree {
 						});
 						openItem.setOpaque(false);
 						openItem.setForeground(Color.BLACK);
-						openItem.setFont(Main.getFont());
+						openItem.setFont(Utils.getFont());
 						menu.add(openItem);
 
 						JMenuItem deleteItem = new JMenuItem(new AbstractAction("Delete") {
@@ -70,7 +70,7 @@ public class CustomTree extends JTree {
 						});
 						deleteItem.setOpaque(false);
 						deleteItem.setForeground(Color.BLACK);
-						deleteItem.setFont(Main.getFont());
+						deleteItem.setFont(Utils.getFont());
 						menu.add(deleteItem);
 
 						menu.show(event.getComponent(), event.getX(), event.getY());
