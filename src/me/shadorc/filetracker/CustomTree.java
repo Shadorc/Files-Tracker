@@ -80,6 +80,7 @@ public class CustomTree extends JTree {
 
 	public void add(CustomNode parent, CustomNode child) {
 		DefaultTreeModel model = (DefaultTreeModel) this.getModel();
+		//Directories are displayed at the top and files at the bottom
 		int index = (child.getFile() != null && child.getFile().isDirectory()) ? 0 : model.getChildCount(parent);
 		model.insertNodeInto(child, parent, index);
 	}

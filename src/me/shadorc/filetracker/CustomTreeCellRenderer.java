@@ -8,7 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
 import me.shadorc.filetracker.Storage.Data;
@@ -38,15 +37,16 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		else {
 			//Recently modified
-			if(Utils.daysBetween(new Date(), node.lastModifiedDate()) <= Integer.parseInt(Storage.getData(Data.MODIFIED_TIME_DAY))) {
+			if(Utils.daysBetween(new Date(), node.lastModifiedDate()) <= Integer.parseInt(Storage.getData(Data.MODIFIED_TIME_DAY)) 
+					&& Boolean.valueOf(Storage.getData(Data.SHOW_MODIFIED))) {
 				node.setColor(new Color(255, 128, 0));
 			}
 
 			//Recently created
-			if(node.createdDate() != null) {
-				if(Utils.daysBetween(new Date(), node.createdDate()) <= Integer.parseInt(Storage.getData(Data.CREATED_TIME_DAY))) {
-					node.setColor(new Color(0, 100, 0));
-				}
+			if(node.createdDate() != null
+					&& Utils.daysBetween(new Date(), node.createdDate()) <= Integer.parseInt(Storage.getData(Data.CREATED_TIME_DAY)) 
+					&& Boolean.valueOf(Storage.getData(Data.SHOW_CREATED))) {
+				node.setColor(new Color(0, 100, 0));
 			}
 		}
 
