@@ -16,8 +16,7 @@ public class Storage {
 		MODIFIED_TIME_DAY,
 		SHOW_CREATED,
 		SHOW_MODIFIED,
-		SHOW_SYSTEM_DIR,
-		BLACKLIST;
+		SHOW_SYSTEM_DIR;
 	}
 
 	public static void store(Data data, Object value) {

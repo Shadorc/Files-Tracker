@@ -7,8 +7,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -22,7 +20,6 @@ public class Frame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private HashMap <File, CustomNode> directories;
-	private ArrayList <String> blackList;
 	private long startTime, lastUpdate, filesCount;
 	private boolean stop;
 
@@ -161,7 +158,6 @@ public class Frame extends JFrame {
 			@Override
 			public void run() {
 				directories = new HashMap <File, CustomNode> ();
-				blackList = new ArrayList <String> (Arrays.asList(Storage.getData(Data.BLACKLIST).split(",")));
 				startTime = System.currentTimeMillis();
 				filesCount = 0;
 
@@ -190,9 +186,8 @@ public class Frame extends JFrame {
 
 		if(!stop && files != null) {
 			for(File child : files) {
-				if(!child.exists() //We check if file exists because there's some very weird bugs with $Recycle.Bin for example
-						|| blackList.contains(child.getName()) 
-						|| (Utils.isSystemFile(child) && !Boolean.valueOf(Storage.getData(Data.SHOW_SYSTEM_DIR)))) continue;
+				//We check if file exists because there's some very weird bugs with $Recycle.Bin for example
+				if(!child.exists() || (Utils.isSystemFile(child) && !Boolean.valueOf(Storage.getData(Data.SHOW_SYSTEM_DIR)))) continue;
 				this.addFile(parent, child);
 				if(child.isDirectory()) {
 					this.search(child);
