@@ -5,8 +5,8 @@ import java.util.Date;
 
 public class Utils {
 
-	public static int daysBetween(Date d1, Date d2){
-		return (int) Math.abs((d2.getTime()-d1.getTime())/(1000*60*60*24));
+	public static boolean isOlder(Date date, String time) {
+		return Math.abs((new Date().getTime()-date.getTime())/(1000*60*60*24)) <= Integer.parseInt(time);
 	}
 
 	public static Font getFont() {
