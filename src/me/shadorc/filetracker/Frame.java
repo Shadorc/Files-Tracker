@@ -7,17 +7,22 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.tree.TreePath;
 
+import me.shadorc.filetracker.Storage.Data;
+
 public class Frame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private HashMap <File, CustomNode> directories;
+	private ArrayList <String> blackList;
 	private long startTime, lastUpdate, filesCount;
 
 	private JPanel mainPanel;
@@ -30,6 +35,7 @@ public class Frame extends JFrame {
 
 		OptionsFrame optionsFrame = new OptionsFrame();
 		directories = new HashMap <File, CustomNode> ();
+		blackList = new ArrayList <String> (Arrays.asList(Storage.getData(Data.BLACKLIST).split(",")));
 
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(Color.WHITE);
@@ -185,6 +191,7 @@ public class Frame extends JFrame {
 
 		if(files != null) {
 			for(File child : files) {
+				if(blackList.contains(child.getName())) continue;
 				this.addFile(parent, child);
 				if(child.isDirectory()) {
 					this.search(child);
