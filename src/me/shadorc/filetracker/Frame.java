@@ -115,6 +115,10 @@ public class Frame extends JFrame {
 		hiddenFile.setFont(Utils.getFont());
 		keysPanel.add(hiddenFile);
 
+		JLabel lockedFile = new JLabel("System", new ImageIcon(this.getClass().getResource("/res/file-icon-locked.png")), JLabel.LEFT);
+		lockedFile.setFont(Utils.getFont());
+		keysPanel.add(lockedFile);
+
 		JLabel emptyFile = new JLabel("Empty");
 		emptyFile.setForeground(Color.GRAY);
 		emptyFile.setFont(Utils.getFont());

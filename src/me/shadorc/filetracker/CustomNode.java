@@ -23,8 +23,13 @@ public class CustomNode extends DefaultMutableTreeNode {
 	public CustomNode(Object userObject, File file) {
 		super(userObject);
 		this.file = file;
-		this.icon = new ImageIcon(this.getClass().getResource("/res/" + (file.isDirectory() ? "folder" : "file") + "-icon" + (file.isHidden() ? "-hidden" : "") + ".png"));
 		this.color = Color.BLACK;
+
+		String iconName = (file.isDirectory() ? "folder" : "file") + "-icon";
+		if(Utils.isSystemFile(file)) iconName += "-locked";
+		else if(file.isHidden()) 	 iconName += "-hidden";
+
+		this.icon = new ImageIcon(this.getClass().getResource("/res/" + iconName + ".png"));
 	}
 
 	public CustomNode(Object userObject) {
