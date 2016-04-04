@@ -51,9 +51,7 @@ public class CustomNode extends DefaultMutableTreeNode {
 		try {
 			BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
 			return new Date(attr.creationTime().toMillis());
-		} catch (IOException ignored) {
-			//			System.out.println("[WARNING] Get file creation time isn't supported for " + e.getMessage());
-		}
+		} catch (IOException ignored) { }
 		return null;
 	}
 

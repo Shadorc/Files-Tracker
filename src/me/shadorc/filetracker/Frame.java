@@ -28,6 +28,7 @@ public class Frame extends JFrame {
 
 	private JPanel mainPanel;
 	private JLabel infoLabel;
+	private JButton scanButton;
 	private CustomTree tree;
 
 	Frame() {
@@ -35,7 +36,6 @@ public class Frame extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		OptionsFrame optionsFrame = new OptionsFrame();
-		blackList = new ArrayList <String> (Arrays.asList(Storage.getData(Data.BLACKLIST).split(",")));
 		stop = true;
 
 		mainPanel = new JPanel(new BorderLayout());
@@ -70,14 +70,14 @@ public class Frame extends JFrame {
 		});
 		buttonsPanel.add(browseButton);
 
-		JButton scanButton = this.createBu("Scan", new ActionListener() {
+		scanButton = this.createBu("Scan", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JButton bu = (JButton) e.getSource();
 				if(stop) {
 					File folder = new File(jtf.getText());
 					if(!folder.exists()) {
-						JOptionPane.showMessageDialog(null, "Sorry, the path you picked is not a directory or does not exist", "Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Sorry, the path you picked is not a directory or does not exist", "Files Tracker - Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						bu.setText("Stop");
 						Frame.this.start(folder);
@@ -99,7 +99,6 @@ public class Frame extends JFrame {
 		buttonsPanel.add(options, BorderLayout.PAGE_END);
 
 		topPanel.add(buttonsPanel, BorderLayout.EAST);
-
 		mainPanel.add(topPanel, BorderLayout.PAGE_START);
 
 		JLabel loading = new JLabel("",  new ImageIcon(this.getClass().getResource("/res/large-icon.png")), JLabel.CENTER);
@@ -162,6 +161,7 @@ public class Frame extends JFrame {
 			@Override
 			public void run() {
 				directories = new HashMap <File, CustomNode> ();
+				blackList = new ArrayList <String> (Arrays.asList(Storage.getData(Data.BLACKLIST).split(",")));
 				startTime = System.currentTimeMillis();
 				filesCount = 0;
 
@@ -180,6 +180,7 @@ public class Frame extends JFrame {
 				mainPanel.add(jsp, BorderLayout.CENTER);
 
 				Frame.this.search(rootFile);
+				scanButton.doClick(); //Reset scan button
 			}
 		}).start();
 	}
@@ -189,7 +190,8 @@ public class Frame extends JFrame {
 
 		if(!stop && files != null) {
 			for(File child : files) {
-				if(blackList.contains(child.getName())) continue;
+				//We check if file exists because there's some very weird bugs with $Recycle.Bin for example
+				if(!child.exists() || blackList.contains(child.getName())) continue;
 				this.addFile(parent, child);
 				if(child.isDirectory()) {
 					this.search(child);

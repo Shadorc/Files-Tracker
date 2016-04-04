@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
 import me.shadorc.filetracker.Storage.Data;
@@ -23,7 +24,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		CustomNode node = (CustomNode) value; 
 
-		if(!node.getFile().exists()) {
+		if(node.getFile() != null && !node.getFile().exists()) {
 			((DefaultTreeModel) tree.getModel()).removeNodeFromParent(node);
 			return panel;
 		}
