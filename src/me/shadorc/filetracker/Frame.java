@@ -24,6 +24,7 @@ public class Frame extends JFrame {
 	private HashMap <File, CustomNode> directories;
 	private ArrayList <String> blackList;
 	private long startTime, lastUpdate, filesCount;
+	private boolean stop;
 
 	private JPanel mainPanel;
 	private JLabel infoLabel;
@@ -34,8 +35,8 @@ public class Frame extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		OptionsFrame optionsFrame = new OptionsFrame();
-		directories = new HashMap <File, CustomNode> ();
 		blackList = new ArrayList <String> (Arrays.asList(Storage.getData(Data.BLACKLIST).split(",")));
+		stop = true;
 
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(Color.WHITE);
@@ -48,12 +49,7 @@ public class Frame extends JFrame {
 
 		JPanel buttonsPanel = new JPanel(new GridLayout(1, 3));
 
-		JButton browseButton = new JButton("Browse");
-		browseButton.setFocusable(false);
-		browseButton.setFont(Utils.getFont());
-		browseButton.setBackground(Color.WHITE);
-		browseButton.setForeground(Color.BLACK);
-		browseButton.addActionListener(new ActionListener() {
+		JButton browseButton = this.createBu("Browse", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -74,30 +70,27 @@ public class Frame extends JFrame {
 		});
 		buttonsPanel.add(browseButton);
 
-		JButton scanButton = new JButton("Scan");
-		scanButton.setFocusable(false);
-		scanButton.setFont(Utils.getFont());
-		scanButton.setBackground(Color.WHITE);
-		scanButton.setForeground(Color.BLACK);
-		scanButton.addActionListener(new ActionListener() {
+		JButton scanButton = this.createBu("Scan", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File folder = new File(jtf.getText());
-				if(!folder.exists()) {
-					JOptionPane.showMessageDialog(null, "Sorry, the path you picked is not a directory or does not exist", "Error", JOptionPane.ERROR_MESSAGE);
+				JButton bu = (JButton) e.getSource();
+				if(stop) {
+					File folder = new File(jtf.getText());
+					if(!folder.exists()) {
+						JOptionPane.showMessageDialog(null, "Sorry, the path you picked is not a directory or does not exist", "Error", JOptionPane.ERROR_MESSAGE);
+					} else {
+						bu.setText("Stop");
+						Frame.this.start(folder);
+					}
 				} else {
-					Frame.this.start(folder);
+					bu.setText("Scan");
 				}
+				stop = !stop;
 			}
 		});
 		buttonsPanel.add(scanButton);
 
-		JButton options = new JButton("Options");
-		options.setFocusable(false);
-		options.setFont(Utils.getFont());
-		options.setBackground(Color.WHITE);
-		options.setForeground(Color.BLACK);
-		options.addActionListener(new ActionListener() {
+		JButton options = this.createBu("Options", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				optionsFrame.setVisible(true);
@@ -168,6 +161,7 @@ public class Frame extends JFrame {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				directories = new HashMap <File, CustomNode> ();
 				startTime = System.currentTimeMillis();
 				filesCount = 0;
 
@@ -193,7 +187,7 @@ public class Frame extends JFrame {
 	private void search(File parent) {
 		File[] files = parent.listFiles();
 
-		if(files != null) {
+		if(!stop && files != null) {
 			for(File child : files) {
 				if(blackList.contains(child.getName())) continue;
 				this.addFile(parent, child);
@@ -227,5 +221,15 @@ public class Frame extends JFrame {
 			infoLabel.setText(filesCount + " files analyzed in " + String.format("%.1f", (System.currentTimeMillis() - startTime)/1000.0) + "s.");
 			lastUpdate = System.currentTimeMillis();
 		}
+	}
+
+	private JButton createBu(String text, ActionListener listener) {
+		JButton button = new JButton(text);
+		button.setFocusable(false);
+		button.setFont(Utils.getFont());
+		button.setBackground(Color.WHITE);
+		button.setForeground(Color.BLACK);
+		button.addActionListener(listener);
+		return button;
 	}
 }
