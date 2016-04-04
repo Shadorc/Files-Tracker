@@ -43,8 +43,23 @@ public class Utils {
 			DosFileAttributeView dosAttr = Files.getFileAttributeView(file.toPath(), DosFileAttributeView.class);
 			return dosAttr.readAttributes().isSystem();
 		} catch (IOException e) {
-			//DosFileAttributeView not supported
-			return false;
+			return false; //DosFileAttributeView not supported
 		}
+	}
+
+	public static boolean delete(File file) {
+		if(file.isDirectory()) {
+			File[] files = file.listFiles();
+			if(files != null){
+				for(File f : files) {
+					if(f.isDirectory()) {
+						Utils.delete(f);
+					} else {
+						f.delete();
+					}
+				}
+			}
+		}
+		return file.delete();
 	}
 }

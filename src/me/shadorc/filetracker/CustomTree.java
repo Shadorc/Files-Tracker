@@ -65,7 +65,7 @@ public class CustomTree extends JTree {
 							public void actionPerformed(ActionEvent event) {
 								CustomNode node = (CustomNode) CustomTree.this.getLastSelectedPathComponent();
 								if(node.getFile() != null && Utils.confirmDeletion(node.getFile()) == JOptionPane.YES_OPTION) {
-									node.getFile().delete();
+									Utils.delete(node.getFile());
 									((DefaultTreeModel) CustomTree.this.getModel()).removeNodeFromParent(node);
 								}
 							}
