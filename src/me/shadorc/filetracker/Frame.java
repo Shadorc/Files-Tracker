@@ -190,8 +190,9 @@ public class Frame extends JFrame {
 
 		if(!stop && files != null) {
 			for(File child : files) {
-				//We check if file exists because there's some very weird bugs with $Recycle.Bin for example
-				if(!child.exists() || blackList.contains(child.getName())) continue;
+				if(!child.exists() //We check if file exists because there's some very weird bugs with $Recycle.Bin for example
+						|| blackList.contains(child.getName()) 
+						|| (Utils.isSystemFile(child) && !Boolean.valueOf(Storage.getData(Data.SHOW_SYSTEM_DIR)))) continue;
 				this.addFile(parent, child);
 				if(child.isDirectory()) {
 					this.search(child);

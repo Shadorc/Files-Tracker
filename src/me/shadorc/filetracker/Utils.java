@@ -2,6 +2,9 @@ package me.shadorc.filetracker;
 
 import java.awt.Font;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.DosFileAttributeView;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -33,5 +36,15 @@ public class Utils {
 				new ImageIcon(Utils.class.getResource("/res/icon.png")));
 
 		return choice;
+	}
+
+	public static boolean isSystemFile(File file) {
+		try {
+			DosFileAttributeView dosAttr = Files.getFileAttributeView(file.toPath(), DosFileAttributeView.class);
+			return dosAttr.readAttributes().isSystem();
+		} catch (IOException e) {
+			//DosFileAttributeView not supported
+			return false;
+		}
 	}
 }
