@@ -61,11 +61,9 @@ public class CustomTree extends JTree {
 						JMenuItem deleteItem = new JMenuItem(new AbstractAction("Delete") {
 							private static final long serialVersionUID = 1L;
 
-							public void actionPerformed(ActionEvent ae) {
+							public void actionPerformed(ActionEvent event) {
 								File file = ((CustomNode) CustomTree.this.getLastSelectedPathComponent()).getFile();
-								if(file != null) {
-									file.delete();
-								}
+								if(file != null) file.delete();
 							}
 						});
 						deleteItem.setOpaque(false);
@@ -82,6 +80,7 @@ public class CustomTree extends JTree {
 
 	public void add(CustomNode parent, CustomNode child) {
 		DefaultTreeModel model = (DefaultTreeModel) this.getModel();
-		model.insertNodeInto(child, parent, model.getChildCount(parent));
+		int index = (child.getFile() != null && child.getFile().isDirectory()) ? 0 : model.getChildCount(parent);
+		model.insertNodeInto(child, parent, index);
 	}
 }
