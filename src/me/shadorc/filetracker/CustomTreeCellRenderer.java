@@ -29,6 +29,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 			((DefaultTreeModel) tree.getModel()).removeNodeFromParent(node);
 			return panel;
 		}
+		node.setColor(Color.BLACK);
 
 		//Empty file
 		if(node.getChildCount() == 1 && ((CustomNode) node.getFirstChild()).isEmpty() || node.isEmpty()) {

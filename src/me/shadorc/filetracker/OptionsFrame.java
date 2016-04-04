@@ -55,6 +55,7 @@ public class OptionsFrame extends JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				Storage.store(data, spinner.getValue());
+				Main.updateFrame();
 			}
 		});
 
@@ -74,6 +75,7 @@ public class OptionsFrame extends JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				Storage.store(data, box.isSelected());
+				Main.updateFrame();
 			}
 		});
 		return box;
