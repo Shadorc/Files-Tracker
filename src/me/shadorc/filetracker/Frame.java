@@ -49,6 +49,7 @@ public class Frame extends JFrame {
 		JPanel buttonsPanel = new JPanel(new GridLayout(1, 3));
 
 		JButton browseButton = new JButton("Browse");
+		browseButton.setFocusable(false);
 		browseButton.setFont(Utils.getFont());
 		browseButton.setBackground(Color.WHITE);
 		browseButton.setForeground(Color.BLACK);
@@ -74,6 +75,7 @@ public class Frame extends JFrame {
 		buttonsPanel.add(browseButton);
 
 		JButton scanButton = new JButton("Scan");
+		scanButton.setFocusable(false);
 		scanButton.setFont(Utils.getFont());
 		scanButton.setBackground(Color.WHITE);
 		scanButton.setForeground(Color.BLACK);
@@ -91,6 +93,7 @@ public class Frame extends JFrame {
 		buttonsPanel.add(scanButton);
 
 		JButton options = new JButton("Options");
+		options.setFocusable(false);
 		options.setFont(Utils.getFont());
 		options.setBackground(Color.WHITE);
 		options.setForeground(Color.BLACK);
@@ -215,7 +218,7 @@ public class Frame extends JFrame {
 			//If the directory is empty
 			File[] listFiles = child.listFiles();
 			if(listFiles == null || listFiles.length == 0) {
-				tree.add(directories.get(child), (CustomNode) CustomNode.EMPTY_NODE.clone());
+				tree.add(childNode, (CustomNode) CustomNode.EMPTY_NODE.clone());
 			}
 		}
 

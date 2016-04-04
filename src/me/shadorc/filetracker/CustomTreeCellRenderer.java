@@ -50,7 +50,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 		}
 
 		//Set the same color for all its parents
-		if(node.getColor() != Color.BLACK) {
+		if(node.getColor() != Color.BLACK && node.getColor() != Color.GRAY) {
 			for(TreeNode parent : node.getPath()) {
 				((CustomNode) parent).setColor(node.getColor());
 			}
