@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
@@ -62,8 +63,11 @@ public class CustomTree extends JTree {
 							private static final long serialVersionUID = 1L;
 
 							public void actionPerformed(ActionEvent event) {
-								File file = ((CustomNode) CustomTree.this.getLastSelectedPathComponent()).getFile();
-								if(file != null) file.delete();
+								CustomNode node = (CustomNode) CustomTree.this.getLastSelectedPathComponent();
+								if(node.getFile() != null && Utils.confirmDeletion(node.getFile()) == JOptionPane.YES_OPTION) {
+									node.getFile().delete();
+									((DefaultTreeModel) CustomTree.this.getModel()).removeNodeFromParent(node);
+								}
 							}
 						});
 						deleteItem.setOpaque(false);
