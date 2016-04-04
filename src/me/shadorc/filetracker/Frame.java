@@ -59,7 +59,8 @@ public class Frame extends JFrame {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception ignored) { }
 
-				JFileChooser chooser = new JFileChooser();
+				File defaultFile = new File("C://");
+				JFileChooser chooser = new JFileChooser(defaultFile.exists() ? defaultFile : null);
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 					jtf.setText(chooser.getSelectedFile().getPath());
