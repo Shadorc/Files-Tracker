@@ -32,7 +32,7 @@ public class CustomTree extends JTree {
 			public void mouseReleased(MouseEvent event) {
 				TreePath path = CustomTree.this.getPathForLocation(event.getX(), event.getY());
 
-				if (path != null) {
+				if(path != null) {
 					CustomTree.this.setSelectionPath(path);
 
 					//Open right click drop-down menu

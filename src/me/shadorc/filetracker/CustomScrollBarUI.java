@@ -30,12 +30,12 @@ public class CustomScrollBarUI extends MetalScrollBarUI {
 
 	@Override
 	protected JButton createDecreaseButton(int orientation) {
-		return createInvisibleButton();
+		return this.createInvisibleButton();
 	}
 
 	@Override    
 	protected JButton createIncreaseButton(int orientation) {
-		return createInvisibleButton();
+		return this.createInvisibleButton();
 	}
 
 	private JButton createInvisibleButton() {

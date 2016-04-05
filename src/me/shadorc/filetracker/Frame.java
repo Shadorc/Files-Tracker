@@ -62,7 +62,7 @@ public class Frame extends JFrame {
 
 				try {
 					UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-				} catch (Exception ignore) { }
+				} catch (Exception ignored) { }
 			}
 		});
 		buttonsPanel.add(browseButton);

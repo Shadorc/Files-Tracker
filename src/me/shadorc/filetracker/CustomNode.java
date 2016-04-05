@@ -22,6 +22,7 @@ public class CustomNode extends DefaultMutableTreeNode {
 
 	public CustomNode(Object userObject, File file) {
 		super(userObject);
+
 		this.file = file;
 		this.color = Color.BLACK;
 

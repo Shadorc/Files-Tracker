@@ -12,10 +12,6 @@ import javax.swing.JOptionPane;
 
 public class Utils {
 
-	public static boolean isOlder(Date date, String time) {
-		return Math.abs((new Date().getTime()-date.getTime())/(1000*60*60*24)) <= Integer.parseInt(time);
-	}
-
 	public static Font getFont() {
 		return new Font("Tahoma", Font.PLAIN, 12);
 	}
@@ -36,6 +32,10 @@ public class Utils {
 				new ImageIcon(Utils.class.getResource("/res/icon.png")));
 
 		return choice;
+	}
+
+	public static boolean isOlder(Date date, String time) {
+		return Math.abs((new Date().getTime()-date.getTime())/(1000*60*60*24)) <= Integer.parseInt(time);
 	}
 
 	public static boolean isSystemFile(File file) {

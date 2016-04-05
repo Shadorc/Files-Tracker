@@ -1,5 +1,6 @@
 package me.shadorc.filetracker;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.Properties;
 public class Storage {
 
 	private static Properties prop = new Properties();
+	private static File conf = new File("config.properties");
 
 	public enum Data {
 		CREATED_TIME_DAY,
@@ -19,11 +21,22 @@ public class Storage {
 		SHOW_SYSTEM_DIR;
 	}
 
+	public static void init() throws IOException {
+		if(!conf.exists()) {
+			conf.createNewFile();
+			Storage.store(Data.MODIFIED_TIME_DAY, 1);
+			Storage.store(Data.CREATED_TIME_DAY, 1);
+			Storage.store(Data.SHOW_MODIFIED, true);
+			Storage.store(Data.SHOW_CREATED, true);
+			Storage.store(Data.SHOW_SYSTEM_DIR, false);
+		}
+	}
+
 	public static void store(Data data, Object value) {
 		OutputStream output = null;
 
 		try {
-			output = new FileOutputStream("config.properties");
+			output = new FileOutputStream(conf);
 
 			prop.setProperty(data.toString(), value.toString());
 			prop.store(output, null);
@@ -44,7 +57,7 @@ public class Storage {
 		InputStream input = null;
 
 		try {
-			input = new FileInputStream("config.properties");
+			input = new FileInputStream(conf);
 			prop.load(input);
 
 			return prop.getProperty(data.toString());
