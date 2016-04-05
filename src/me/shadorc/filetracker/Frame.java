@@ -21,7 +21,7 @@ public class Frame extends JFrame {
 
 	private HashMap <File, CustomNode> directories;
 	private long startTime, lastUpdate, filesCount;
-	private boolean stop;
+	private boolean isSearching;
 
 	private JPanel mainPanel;
 	private JLabel infoLabel;
@@ -33,7 +33,7 @@ public class Frame extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		OptionsFrame optionsFrame = new OptionsFrame();
-		stop = true;
+		isSearching = false;
 
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(Color.WHITE);
@@ -70,19 +70,15 @@ public class Frame extends JFrame {
 		scanButton = this.createBu("Scan", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JButton bu = (JButton) e.getSource();
-				if(stop) {
+				if(!isSearching) {
 					File folder = new File(jtf.getText());
 					if(!folder.exists()) {
 						JOptionPane.showMessageDialog(null, "Sorry, the path you picked is not a directory or does not exist", "Files Tracker - Error", JOptionPane.ERROR_MESSAGE);
-					} else {
-						bu.setText("Stop");
-						Frame.this.start(folder);
+						return;
 					}
-				} else {
-					bu.setText("Scan");
+					Frame.this.start(folder);
 				}
-				stop = !stop;
+				Frame.this.switchBu();
 			}
 		});
 		buttonsPanel.add(scanButton);
@@ -180,7 +176,7 @@ public class Frame extends JFrame {
 				mainPanel.add(jsp, BorderLayout.CENTER);
 
 				Frame.this.search(rootFile);
-				scanButton.doClick(); //Reset scan button
+				if(isSearching) Frame.this.switchBu();
 			}
 		}).start();
 	}
@@ -188,7 +184,7 @@ public class Frame extends JFrame {
 	private void search(File parent) {
 		File[] files = parent.listFiles();
 
-		if(!stop && files != null) {
+		if(isSearching && files != null) {
 			for(File child : files) {
 				//We check if file exists because there's some very weird bugs with $Recycle.Bin for example
 				if(!child.exists() || (Utils.isSystemFile(child) && !Boolean.valueOf(Storage.getData(Data.SHOW_SYSTEM_DIR)))) continue;
@@ -233,5 +229,10 @@ public class Frame extends JFrame {
 		button.setForeground(Color.BLACK);
 		button.addActionListener(listener);
 		return button;
+	}
+
+	private void switchBu() {
+		scanButton.setText(isSearching ? "Scan" : "Stop");
+		isSearching = !isSearching;
 	}
 }
