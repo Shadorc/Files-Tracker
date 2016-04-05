@@ -34,6 +34,10 @@ public class Utils {
 		return choice;
 	}
 
+	public static void showErrorDialog(String message) {
+		JOptionPane.showMessageDialog(null, message, "Files Tracker - Error", JOptionPane.ERROR_MESSAGE, new ImageIcon(Utils.class.getResource("/res/icon.png")));
+	}
+
 	public static boolean isOlder(Date date, String time) {
 		return Math.abs((new Date().getTime()-date.getTime())/(1000*60*60*24)) <= Integer.parseInt(time);
 	}

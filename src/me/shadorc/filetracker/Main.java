@@ -13,7 +13,7 @@ public class Main {
 		try {
 			Storage.init();
 		} catch (IOException e) {
-			System.err.println("[ERROR] Aborting, an error occured while creating config file : " + e.getMessage());
+			Utils.showErrorDialog("Aborting, an error occured while creating config file : " + e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}

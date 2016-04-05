@@ -34,6 +34,8 @@ public class CustomTree extends JTree {
 
 				if(path != null) {
 					CustomTree.this.setSelectionPath(path);
+					CustomNode node = (CustomNode) CustomTree.this.getLastSelectedPathComponent();
+					File file = node.getFile() != null ? node.getFile() : ((CustomNode) node.getParent()).getFile();
 
 					//Open right click drop-down menu
 					if(event.isPopupTrigger()) {
@@ -44,13 +46,11 @@ public class CustomTree extends JTree {
 							private static final long serialVersionUID = 1L;
 
 							public void actionPerformed(ActionEvent event) {
-								CustomNode node = (CustomNode) CustomTree.this.getLastSelectedPathComponent();
-								File file = node.getFile() != null ? node.getFile() : ((CustomNode) node.getParent()).getFile();
 								if(Desktop.isDesktopSupported()) {
 									try {
 										Desktop.getDesktop().open(file.isDirectory() ? file : file.getParentFile());
 									} catch (IOException e) {
-										System.err.println("[ERROR] Error while opening " + file + " : " + e.getMessage());
+										Utils.showErrorDialog("Error while opening " + file + " : " + e.getMessage());
 										e.printStackTrace();
 									}
 								}
@@ -65,9 +65,10 @@ public class CustomTree extends JTree {
 							private static final long serialVersionUID = 1L;
 
 							public void actionPerformed(ActionEvent event) {
-								CustomNode node = (CustomNode) CustomTree.this.getLastSelectedPathComponent();
-								File file = node.getFile() != null ? node.getFile() : ((CustomNode) node.getParent()).getFile();
-								if(Utils.confirmDeletion(file) == JOptionPane.YES_OPTION) {
+								if(Utils.isSystemFile(file)) {
+									Utils.showErrorDialog("Deleting a system file is not allowed.");
+								} 
+								else if(Utils.confirmDeletion(file) == JOptionPane.YES_OPTION) {
 									Utils.delete(file);
 									((DefaultTreeModel) CustomTree.this.getModel()).removeNodeFromParent(node);
 								}
