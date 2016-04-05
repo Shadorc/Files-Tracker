@@ -44,7 +44,7 @@ public class Frame extends JFrame {
 		JTextField jtf = new JTextField("C:\\");
 		topPanel.add(jtf, BorderLayout.CENTER);
 
-		JPanel buttonsPanel = new JPanel(new GridLayout(1, 3));
+		JPanel buttonsPanel = new JPanel(new GridLayout(1, 4));
 
 		JButton browseButton = this.createBu("Browse", new ActionListener() {
 			@Override
@@ -83,13 +83,26 @@ public class Frame extends JFrame {
 		});
 		buttonsPanel.add(scanButton);
 
+		JButton collapse = this.createBu("Collapse", new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(tree == null) return;
+				//We remove UI during the operation to save A LOT of times
+				tree.setUI(null);
+				Utils.collapseAll(tree, new TreePath(tree.getModel().getRoot()));
+				tree.updateUI();
+				tree.expandPath(new TreePath(tree.getModel().getRoot()));
+			}
+		});
+		buttonsPanel.add(collapse);
+
 		JButton options = this.createBu("Options", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				optionsFrame.setVisible(true);
 			}
 		});
-		buttonsPanel.add(options, BorderLayout.PAGE_END);
+		buttonsPanel.add(options);
 
 		topPanel.add(buttonsPanel, BorderLayout.EAST);
 		mainPanel.add(topPanel, BorderLayout.PAGE_START);

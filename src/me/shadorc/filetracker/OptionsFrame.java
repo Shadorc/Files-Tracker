@@ -28,8 +28,8 @@ public class OptionsFrame extends JFrame {
 		mainPanel = new JPanel(new GridLayout(2, 1));
 
 		JPanel spinners = new JPanel(new GridLayout(2, 1));
-		spinners.add(this.createOption("Minimum day(s) to consider a file as new : ", Data.CREATED_TIME_DAY));
-		spinners.add(this.createOption("Minimum day(s) to consider a file as recently modified : ", Data.MODIFIED_TIME_DAY));
+		spinners.add(this.createOption("Consider a file as new if it was created less than", Data.CREATED_TIME_DAY));
+		spinners.add(this.createOption("Consider a file as recently modified if it was created less than", Data.MODIFIED_TIME_DAY));
 		mainPanel.add(spinners);
 
 		JPanel boxes = new JPanel(new GridLayout(2, 2));
@@ -64,7 +64,9 @@ public class OptionsFrame extends JFrame {
 
 		JPanel spinnerPanel = new JPanel(new GridLayout(1, 2));
 		spinnerPanel.add(spinner);
-		spinnerPanel.add(new JLabel("days"));
+		JLabel spinLabel = new JLabel(" days ago ");
+		spinLabel.setFont(Utils.getFont());
+		spinnerPanel.add(spinLabel);
 
 		panel.add(spinnerPanel, BorderLayout.EAST);
 

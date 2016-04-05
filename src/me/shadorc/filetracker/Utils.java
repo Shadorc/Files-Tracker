@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.DosFileAttributeView;
 import java.util.Date;
+import java.util.Enumeration;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JTree;
+import javax.swing.tree.TreePath;
 
 public class Utils {
 
@@ -65,5 +68,21 @@ public class Utils {
 			}
 		}
 		return file.delete();
+	}
+
+	public static void collapseAll(JTree tree, TreePath path) {
+		CustomNode node = (CustomNode) path.getLastPathComponent();
+
+		if (node.getChildCount() >= 0) {
+			Enumeration <?> enumeration = node.children();
+			while (enumeration.hasMoreElements()) {
+				CustomNode n = (CustomNode) enumeration.nextElement();
+				TreePath p = path.pathByAddingChild(n);
+
+				Utils.collapseAll(tree, p);
+			}
+		}
+
+		tree.collapsePath(path);
 	}
 }
