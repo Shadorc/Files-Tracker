@@ -37,7 +37,7 @@ public class CustomTree extends JTree {
 				if(path != null) {
 					CustomTree.this.setSelectionPath(path);
 					CustomNode node = (CustomNode) CustomTree.this.getLastSelectedPathComponent();
-					File file = node.getFile() != null ? node.getFile() : ((CustomNode) node.getParent()).getFile();
+					File file = (node.getFile() != null) ? node.getFile() : ((CustomNode) node.getParent()).getFile();
 
 					//Open right click drop-down menu
 					if(event.isPopupTrigger()) {
@@ -59,7 +59,7 @@ public class CustomTree extends JTree {
 						});
 						openItem.setOpaque(false);
 						openItem.setForeground(Color.BLACK);
-						openItem.setFont(Utils.getFont());
+						openItem.setFont(Utils.DEFAULT_FONT);
 						menu.add(openItem);
 
 						JMenuItem deleteItem = new JMenuItem(new AbstractAction("Delete") {
@@ -77,7 +77,7 @@ public class CustomTree extends JTree {
 						});
 						deleteItem.setOpaque(false);
 						deleteItem.setForeground(Color.BLACK);
-						deleteItem.setFont(Utils.getFont());
+						deleteItem.setFont(Utils.DEFAULT_FONT);
 						menu.add(deleteItem);
 
 						menu.show(event.getComponent(), event.getX(), event.getY());

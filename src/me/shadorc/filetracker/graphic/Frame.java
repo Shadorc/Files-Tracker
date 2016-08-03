@@ -14,8 +14,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.tree.TreePath;
 
 import me.shadorc.filetracker.Storage;
-import me.shadorc.filetracker.Utils;
 import me.shadorc.filetracker.Storage.Data;
+import me.shadorc.filetracker.Utils;
 
 public class Frame extends JFrame {
 
@@ -122,30 +122,30 @@ public class Frame extends JFrame {
 		keysPanel.setBorder(new CompoundBorder(BorderFactory.createTitledBorder("Keys"), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
 		JLabel normalFile = new JLabel("Normal", new ImageIcon(this.getClass().getResource("/res/file-icon.png")), JLabel.LEFT);
-		normalFile.setFont(Utils.getFont());
+		normalFile.setFont(Utils.DEFAULT_FONT);
 		keysPanel.add(normalFile);
 
 		JLabel hiddenFile = new JLabel("Hidden", new ImageIcon(this.getClass().getResource("/res/file-icon-hidden.png")), JLabel.LEFT);
-		hiddenFile.setFont(Utils.getFont());
+		hiddenFile.setFont(Utils.DEFAULT_FONT);
 		keysPanel.add(hiddenFile);
 
 		JLabel lockedFile = new JLabel("System", new ImageIcon(this.getClass().getResource("/res/file-icon-locked.png")), JLabel.LEFT);
-		lockedFile.setFont(Utils.getFont());
+		lockedFile.setFont(Utils.DEFAULT_FONT);
 		keysPanel.add(lockedFile);
 
 		JLabel emptyFile = new JLabel("Empty");
 		emptyFile.setForeground(Color.GRAY);
-		emptyFile.setFont(Utils.getFont());
+		emptyFile.setFont(Utils.DEFAULT_FONT);
 		keysPanel.add(emptyFile);
 
 		JLabel modifiedFile = new JLabel("Recently modified");
 		modifiedFile.setForeground(new Color(255, 128, 0));
-		modifiedFile.setFont(Utils.getFont());
+		modifiedFile.setFont(Utils.DEFAULT_FONT);
 		keysPanel.add(modifiedFile);
 
 		JLabel createdFile = new JLabel("Recently created");
 		createdFile.setForeground(new Color(0, 100, 0));
-		createdFile.setFont(Utils.getFont());
+		createdFile.setFont(Utils.DEFAULT_FONT);
 		keysPanel.add(createdFile);
 
 		mainPanel.add(keysPanel, BorderLayout.EAST);
@@ -157,7 +157,7 @@ public class Frame extends JFrame {
 		infoPanel.setOpaque(false);
 
 		infoLabel = new JLabel("Select a folder to scan...");
-		infoLabel.setFont(Utils.getFont());
+		infoLabel.setFont(Utils.DEFAULT_FONT);
 		infoLabel.setForeground(Color.BLACK);		
 		infoPanel.add(infoLabel);
 
@@ -242,7 +242,7 @@ public class Frame extends JFrame {
 	private JButton createBu(String text, ActionListener listener) {
 		JButton button = new JButton(text);
 		button.setFocusable(false);
-		button.setFont(Utils.getFont());
+		button.setFont(Utils.DEFAULT_FONT);
 		button.setBackground(Color.WHITE);
 		button.setForeground(Color.BLACK);
 		button.addActionListener(listener);

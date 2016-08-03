@@ -3,7 +3,6 @@ package me.shadorc.filetracker.graphic;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,8 +14,8 @@ import javax.swing.event.ChangeListener;
 
 import me.shadorc.filetracker.Main;
 import me.shadorc.filetracker.Storage;
-import me.shadorc.filetracker.Utils;
 import me.shadorc.filetracker.Storage.Data;
+import me.shadorc.filetracker.Utils;
 
 public class OptionsFrame extends JFrame {
 
@@ -44,14 +43,14 @@ public class OptionsFrame extends JFrame {
 		this.setContentPane(mainPanel);
 		this.pack();
 		this.setLocationRelativeTo(null);
-		this.setIconImage(new ImageIcon(this.getClass().getResource("/res/icon.png")).getImage());
+		this.setIconImage(Utils.ICON.getImage());
 	}
 
 	private JPanel createOption(String labelText, Data data) {
 		JPanel panel = new JPanel(new BorderLayout());
 
 		JLabel label = new JLabel(labelText);
-		label.setFont(Utils.getFont());
+		label.setFont(Utils.DEFAULT_FONT);
 		panel.add(label, BorderLayout.CENTER);
 
 		int value = (Storage.getData(data) == null) ? 0 : Integer.parseInt(Storage.getData(data));
@@ -68,7 +67,7 @@ public class OptionsFrame extends JFrame {
 		JPanel spinnerPanel = new JPanel(new GridLayout(1, 2));
 		spinnerPanel.add(spinner);
 		JLabel spinLabel = new JLabel(" days ago ");
-		spinLabel.setFont(Utils.getFont());
+		spinLabel.setFont(Utils.DEFAULT_FONT);
 		spinnerPanel.add(spinLabel);
 
 		panel.add(spinnerPanel, BorderLayout.EAST);

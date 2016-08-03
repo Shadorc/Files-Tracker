@@ -18,10 +18,7 @@ import me.shadorc.filetracker.graphic.CustomNode;
 public class Utils {
 
 	public final static ImageIcon ICON = new ImageIcon(Utils.class.getResource("/res/icon.png"));
-
-	public static Font getFont() {
-		return new Font("Tahoma", Font.PLAIN, 12);
-	}
+	public final static Font DEFAULT_FONT = new Font("Tahoma", Font.PLAIN, 12);
 
 	public static String toReadableByteCount(long bytes) {
 		if (bytes < 1000) return bytes + " B";

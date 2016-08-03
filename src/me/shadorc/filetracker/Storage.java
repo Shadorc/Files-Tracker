@@ -10,8 +10,8 @@ import java.util.Properties;
 
 public class Storage {
 
-	private static Properties prop = new Properties();
-	private static File conf = new File("config.properties");
+	private static final Properties PROPERTIES = new Properties();
+	private static final File CONFIG_FILE = new File("config.properties");
 
 	public enum Data {
 		CREATED_TIME_DAY,
@@ -22,8 +22,8 @@ public class Storage {
 	}
 
 	public static void init() throws IOException {
-		if(!conf.exists()) {
-			conf.createNewFile();
+		if(!CONFIG_FILE.exists()) {
+			CONFIG_FILE.createNewFile();
 			Storage.store(Data.MODIFIED_TIME_DAY, 1);
 			Storage.store(Data.CREATED_TIME_DAY, 1);
 			Storage.store(Data.SHOW_MODIFIED, true);
@@ -36,10 +36,10 @@ public class Storage {
 		OutputStream output = null;
 
 		try {
-			output = new FileOutputStream(conf);
+			output = new FileOutputStream(CONFIG_FILE);
 
-			prop.setProperty(data.toString(), value.toString());
-			prop.store(output, null);
+			PROPERTIES.setProperty(data.toString(), value.toString());
+			PROPERTIES.store(output, null);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -57,10 +57,10 @@ public class Storage {
 		InputStream input = null;
 
 		try {
-			input = new FileInputStream(conf);
-			prop.load(input);
+			input = new FileInputStream(CONFIG_FILE);
+			PROPERTIES.load(input);
 
-			return prop.getProperty(data.toString());
+			return PROPERTIES.getProperty(data.toString());
 
 		} catch (IOException e) {
 			e.printStackTrace();

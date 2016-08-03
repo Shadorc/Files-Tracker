@@ -11,8 +11,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
 import me.shadorc.filetracker.Storage;
-import me.shadorc.filetracker.Utils;
 import me.shadorc.filetracker.Storage.Data;
+import me.shadorc.filetracker.Utils;
 
 public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 
@@ -62,7 +62,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		JLabel label = new JLabel(String.valueOf(node.getUserObject()));
 		label.setForeground(node.getColor());
-		label.setFont(Utils.getFont());
+		label.setFont(Utils.DEFAULT_FONT);
 		label.setIcon(node.getIcon());
 		panel.add(label);
 
