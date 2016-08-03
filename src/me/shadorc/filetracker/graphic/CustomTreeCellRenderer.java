@@ -1,4 +1,4 @@
-package me.shadorc.filetracker;
+package me.shadorc.filetracker.graphic;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -10,6 +10,8 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
+import me.shadorc.filetracker.Storage;
+import me.shadorc.filetracker.Utils;
 import me.shadorc.filetracker.Storage.Data;
 
 public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
@@ -28,7 +30,8 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 			((DefaultTreeModel) tree.getModel()).removeNodeFromParent(node);
 			return panel;
 		}
-		node.setColor(Color.BLACK);
+
+		//		node.setColor(Color.BLACK); //FIXME
 
 		//Empty file
 		if(node.getChildCount() == 1 && ((CustomNode) node.getFirstChild()).isEmpty() || node.isEmpty()) {

@@ -1,4 +1,4 @@
-package me.shadorc.filetracker;
+package me.shadorc.filetracker.graphic;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,6 +13,8 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.tree.TreePath;
 
+import me.shadorc.filetracker.Storage;
+import me.shadorc.filetracker.Utils;
 import me.shadorc.filetracker.Storage.Data;
 
 public class Frame extends JFrame {
@@ -28,11 +30,12 @@ public class Frame extends JFrame {
 	private JButton scanButton;
 	private CustomTree tree;
 
-	Frame() {
+	public Frame() {
 		super("Files Tracker - Bêta");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		OptionsFrame optionsFrame = new OptionsFrame();
+
 		isSearching = false;
 
 		mainPanel = new JPanel(new BorderLayout());
@@ -41,7 +44,7 @@ public class Frame extends JFrame {
 		JPanel topPanel = new JPanel(new BorderLayout());
 		topPanel.setOpaque(false);
 
-		JTextField jtf = new JTextField("C:\\");
+		JTextField jtf = new JTextField("C:/");
 		topPanel.add(jtf, BorderLayout.CENTER);
 
 		JPanel buttonsPanel = new JPanel(new GridLayout(1, 4));
@@ -53,10 +56,12 @@ public class Frame extends JFrame {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception ignored) { }
 
-				File defaultFile = new File("C://");
+				File defaultFile = new File("C:/");
 				JFileChooser chooser = new JFileChooser(defaultFile.exists() ? defaultFile : null);
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+
+				int choice = chooser.showOpenDialog(Frame.this);
+				if(choice == JFileChooser.APPROVE_OPTION) {
 					jtf.setText(chooser.getSelectedFile().getPath());
 				}	
 
@@ -73,7 +78,7 @@ public class Frame extends JFrame {
 				if(!isSearching) {
 					File folder = new File(jtf.getText());
 					if(!folder.exists()) {
-						JOptionPane.showMessageDialog(null, "Sorry, the path you picked is not a directory or does not exist", "Files Tracker - Error", JOptionPane.ERROR_MESSAGE);
+						Utils.showErrorDialog(null, "Sorry, the path you picked is not a directory or does not exist");
 						return;
 					}
 					Frame.this.start(folder);
@@ -160,7 +165,7 @@ public class Frame extends JFrame {
 
 		this.setContentPane(mainPanel);
 		this.pack();
-		this.setIconImage(new ImageIcon(this.getClass().getResource("/res/icon.png")).getImage());
+		this.setIconImage(Utils.ICON.getImage());
 		this.setMinimumSize(new Dimension(800, 600));
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);

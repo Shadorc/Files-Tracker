@@ -1,4 +1,4 @@
-package me.shadorc.filetracker;
+package me.shadorc.filetracker.graphic;
 
 import java.awt.Color;
 import java.io.File;
@@ -10,6 +10,8 @@ import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import me.shadorc.filetracker.Utils;
+
 public class CustomNode extends DefaultMutableTreeNode {
 
 	private static final long serialVersionUID = 1L;
@@ -20,7 +22,7 @@ public class CustomNode extends DefaultMutableTreeNode {
 	private ImageIcon icon;
 	private Color color;
 
-	public CustomNode(Object userObject, File file) {
+	CustomNode(Object userObject, File file) {
 		super(userObject);
 
 		this.file = file;

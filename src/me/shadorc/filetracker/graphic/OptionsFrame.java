@@ -1,4 +1,4 @@
-package me.shadorc.filetracker;
+package me.shadorc.filetracker.graphic;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -13,6 +13,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import me.shadorc.filetracker.Main;
+import me.shadorc.filetracker.Storage;
+import me.shadorc.filetracker.Utils;
 import me.shadorc.filetracker.Storage.Data;
 
 public class OptionsFrame extends JFrame {
@@ -21,7 +24,7 @@ public class OptionsFrame extends JFrame {
 
 	private JPanel mainPanel;
 
-	public OptionsFrame() {
+	OptionsFrame() {
 		super("Files Tracker - Options");
 		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 

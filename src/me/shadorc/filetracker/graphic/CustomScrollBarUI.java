@@ -1,4 +1,4 @@
-package me.shadorc.filetracker;
+package me.shadorc.filetracker.graphic;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -14,7 +14,7 @@ public class CustomScrollBarUI extends MetalScrollBarUI {
 
 	private Image imageThumb;
 
-	public CustomScrollBarUI() {
+	CustomScrollBarUI() {
 		this.imageThumb = new ImageIcon(this.getClass().getResource("/res/scrollbar.png")).getImage();
 	}
 

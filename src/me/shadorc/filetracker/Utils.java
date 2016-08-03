@@ -13,7 +13,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
+import me.shadorc.filetracker.graphic.CustomNode;
+
 public class Utils {
+
+	public final static ImageIcon ICON = new ImageIcon(Utils.class.getResource("/res/icon.png"));
 
 	public static Font getFont() {
 		return new Font("Tahoma", Font.PLAIN, 12);
@@ -32,13 +36,14 @@ public class Utils {
 				"Files Tracker - Delete file",
 				JOptionPane.YES_NO_OPTION,
 				JOptionPane.PLAIN_MESSAGE,
-				new ImageIcon(Utils.class.getResource("/res/icon.png")));
+				ICON);
 
 		return choice;
 	}
 
-	public static void showErrorDialog(String message) {
-		JOptionPane.showMessageDialog(null, message, "Files Tracker - Error", JOptionPane.ERROR_MESSAGE, new ImageIcon(Utils.class.getResource("/res/icon.png")));
+	public static void showErrorDialog(Exception err, String message) {
+		JOptionPane.showMessageDialog(null, message, "Files Tracker - Error", JOptionPane.ERROR_MESSAGE, ICON);
+		if(err != null) err.printStackTrace();
 	}
 
 	public static boolean isOlder(Date date, String time) {

@@ -1,4 +1,4 @@
-package me.shadorc.filetracker;
+package me.shadorc.filetracker.graphic;
 
 import java.awt.Color;
 import java.awt.Desktop;
@@ -17,11 +17,13 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import me.shadorc.filetracker.Utils;
+
 public class CustomTree extends JTree {
 
 	private static final long serialVersionUID = 1L;
 
-	public CustomTree(TreeNode root) {
+	CustomTree(TreeNode root) {
 		super(root);
 
 		this.setRowHeight(22);
@@ -49,9 +51,8 @@ public class CustomTree extends JTree {
 								if(Desktop.isDesktopSupported()) {
 									try {
 										Desktop.getDesktop().open(file.isDirectory() ? file : file.getParentFile());
-									} catch (IOException e) {
-										Utils.showErrorDialog("Error while opening " + file + " : " + e.getMessage());
-										e.printStackTrace();
+									} catch (IOException err) {
+										Utils.showErrorDialog(err, "Error while opening " + file + " : " + err.getMessage());
 									}
 								}
 							}
@@ -66,7 +67,7 @@ public class CustomTree extends JTree {
 
 							public void actionPerformed(ActionEvent event) {
 								if(Utils.isSystemFile(file)) {
-									Utils.showErrorDialog("Deleting a system file is not allowed.");
+									Utils.showErrorDialog(null, "Deleting a system file is not allowed.");
 								} 
 								else if(Utils.confirmDeletion(file) == JOptionPane.YES_OPTION) {
 									Utils.delete(file);

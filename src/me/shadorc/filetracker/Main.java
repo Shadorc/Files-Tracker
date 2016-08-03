@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javax.swing.SwingUtilities;
 
+import me.shadorc.filetracker.graphic.Frame;
+
 public class Main {
 
 	private static Frame frame;
@@ -12,9 +14,8 @@ public class Main {
 
 		try {
 			Storage.init();
-		} catch (IOException e) {
-			Utils.showErrorDialog("Aborting, an error occured while creating config file : " + e.getMessage());
-			e.printStackTrace();
+		} catch (IOException err) {
+			Utils.showErrorDialog(err, "Aborting, an error occured while creating config file : " + err.getMessage());
 			System.exit(1);
 		}
 
