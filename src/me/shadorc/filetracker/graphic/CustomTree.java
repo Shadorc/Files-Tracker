@@ -69,7 +69,7 @@ public class CustomTree extends JTree {
 								if(Utils.isSystemFile(file)) {
 									Utils.showErrorDialog(null, "Deleting a system file is not allowed.");
 								} 
-								else if(Utils.confirmDeletion(file) == JOptionPane.YES_OPTION) {
+								else if(Utils.showConfirmDeletion(file) == JOptionPane.YES_OPTION) {
 									Utils.delete(file);
 									((DefaultTreeModel) CustomTree.this.getModel()).removeNodeFromParent(node);
 								}

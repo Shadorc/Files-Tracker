@@ -53,13 +53,13 @@ public class OptionsFrame extends JFrame {
 		label.setFont(Utils.DEFAULT_FONT);
 		panel.add(label, BorderLayout.CENTER);
 
-		int value = (Storage.getData(data) == null) ? 0 : Integer.parseInt(Storage.getData(data));
+		int value = (Storage.get(data) == null) ? 0 : Integer.parseInt(Storage.get(data));
 
 		JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, 0, 365, 1));
 		spinner.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				Storage.store(data, spinner.getValue());
+				Storage.save(data, spinner.getValue());
 				Main.updateFrame();
 			}
 		});
@@ -76,12 +76,12 @@ public class OptionsFrame extends JFrame {
 	}
 
 	private JCheckBox createBox(String desc, Data data) {
-		boolean value = Storage.getData(data) == null ? true : Boolean.parseBoolean(Storage.getData(data));
+		boolean value = Storage.get(data) == null ? true : Boolean.parseBoolean(Storage.get(data));
 		JCheckBox box = new JCheckBox(desc, value);
 		box.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				Storage.store(data, box.isSelected());
+				Storage.save(data, box.isSelected());
 				Main.updateFrame();
 			}
 		});

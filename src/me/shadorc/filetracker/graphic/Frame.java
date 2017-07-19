@@ -22,7 +22,8 @@ public class Frame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private HashMap <File, CustomNode> directories;
-	private long startTime, lastUpdate, filesCount;
+	private long startTime, lastUpdate;
+	private int filesCount;
 	private boolean isSearching;
 
 	private JPanel mainPanel;
@@ -36,15 +37,17 @@ public class Frame extends JFrame {
 
 		OptionsFrame optionsFrame = new OptionsFrame();
 
-		isSearching = false;
+		this.isSearching = false;
 
-		mainPanel = new JPanel(new BorderLayout());
-		mainPanel.setBackground(Color.WHITE);
+		this.mainPanel = new JPanel(new BorderLayout());
+		this.mainPanel.setBackground(Color.WHITE);
 
 		JPanel topPanel = new JPanel(new BorderLayout());
 		topPanel.setOpaque(false);
 
-		JTextField jtf = new JTextField("C:/");
+		final File defaultFile = Utils.getDefaultDisk();
+
+		JTextField jtf = new JTextField(defaultFile.getPath());
 		topPanel.add(jtf, BorderLayout.CENTER);
 
 		JPanel buttonsPanel = new JPanel(new GridLayout(1, 4));
@@ -56,8 +59,7 @@ public class Frame extends JFrame {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception ignored) { }
 
-				File defaultFile = new File("C:/");
-				JFileChooser chooser = new JFileChooser(defaultFile.exists() ? defaultFile : null);
+				JFileChooser chooser = new JFileChooser(defaultFile);
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 				int choice = chooser.showOpenDialog(Frame.this);
@@ -72,13 +74,13 @@ public class Frame extends JFrame {
 		});
 		buttonsPanel.add(browseButton);
 
-		scanButton = this.createBu("Scan", new ActionListener() {
+		this.scanButton = this.createBu("Scan", new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(!isSearching) {
 					File folder = new File(jtf.getText());
 					if(!folder.exists()) {
-						Utils.showErrorDialog(null, "Sorry, the path you picked is not a directory or does not exist");
+						Utils.showErrorDialog(null, "Sorry, the selected path is not a directory or does not exist");
 						return;
 					}
 					Frame.this.start(folder);
@@ -179,18 +181,17 @@ public class Frame extends JFrame {
 				startTime = System.currentTimeMillis();
 				filesCount = 0;
 
+				CustomNode rootNode = new CustomNode(rootFile.getPath(), rootFile);
+				directories.put(rootFile, rootNode);
+
 				//Remove the loading icon
 				BorderLayout layout = (BorderLayout) mainPanel.getLayout();
 				mainPanel.remove(layout.getLayoutComponent(BorderLayout.CENTER));
-
-				CustomNode rootNode = new CustomNode(rootFile.getPath(), rootFile);
-				directories.put(rootFile, rootNode);
 
 				tree = new CustomTree(rootNode);
 				JScrollPane jsp = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 				jsp.getVerticalScrollBar().setUI(new CustomScrollBarUI());
 				jsp.getHorizontalScrollBar().setUI(new CustomScrollBarUI());
-
 				mainPanel.add(jsp, BorderLayout.CENTER);
 
 				Frame.this.search(rootFile);
@@ -201,11 +202,10 @@ public class Frame extends JFrame {
 
 	private void search(File parent) {
 		File[] files = parent.listFiles();
-
 		if(isSearching && files != null) {
 			for(File child : files) {
 				//We check if file exists because there's some very weird bugs with $Recycle.Bin for example
-				if(!child.exists() || (Utils.isSystemFile(child) && !Boolean.valueOf(Storage.getData(Data.SHOW_SYSTEM_DIR)))) continue;
+				if(!child.exists() || (Utils.isSystemFile(child) && !Boolean.valueOf(Storage.get(Data.SHOW_SYSTEM_DIR)))) continue;
 				this.addFile(parent, child);
 				if(child.isDirectory()) {
 					this.search(child);

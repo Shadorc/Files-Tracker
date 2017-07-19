@@ -24,15 +24,15 @@ public class Storage {
 	public static void init() throws IOException {
 		if(!CONFIG_FILE.exists()) {
 			CONFIG_FILE.createNewFile();
-			Storage.store(Data.MODIFIED_TIME_DAY, 1);
-			Storage.store(Data.CREATED_TIME_DAY, 1);
-			Storage.store(Data.SHOW_MODIFIED, true);
-			Storage.store(Data.SHOW_CREATED, true);
-			Storage.store(Data.SHOW_SYSTEM_DIR, false);
+			Storage.save(Data.MODIFIED_TIME_DAY, 1);
+			Storage.save(Data.CREATED_TIME_DAY, 1);
+			Storage.save(Data.SHOW_MODIFIED, true);
+			Storage.save(Data.SHOW_CREATED, true);
+			Storage.save(Data.SHOW_SYSTEM_DIR, false);
 		}
 	}
 
-	public static void store(Data data, Object value) {
+	public static void save(Data data, Object value) {
 		OutputStream output = null;
 
 		try {
@@ -46,14 +46,14 @@ public class Storage {
 
 		} finally {
 			try {
-				if (output != null) output.close();
+				if(output != null) output.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public static String getData(Data data) {
+	public static String get(Data data) {
 		InputStream input = null;
 
 		try {
@@ -67,7 +67,7 @@ public class Storage {
 
 		} finally {
 			try {
-				if (input != null) input.close();
+				if(input != null) input.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

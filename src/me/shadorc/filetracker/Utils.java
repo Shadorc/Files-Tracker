@@ -20,14 +20,23 @@ public class Utils {
 	public final static ImageIcon ICON = new ImageIcon(Utils.class.getResource("/res/icon.png"));
 	public final static Font DEFAULT_FONT = new Font("Tahoma", Font.PLAIN, 12);
 
+	public static File getDefaultDisk() {
+		for(File file : File.listRoots()) {
+			if(file.listFiles() != null) {
+				return file;
+			}
+		}
+		return null;
+	}
+
 	public static String toReadableByteCount(long bytes) {
-		if (bytes < 1000) return bytes + " B";
+		if(bytes < 1000) return bytes + " B";
 		int exp = (int) (Math.log(bytes) / Math.log(1000));
 		char pre = "kMGTPE".charAt(exp-1);
 		return String.format("%.1f %sB", bytes / Math.pow(1000, exp), pre);
 	}
 
-	public static int confirmDeletion(File file) {
+	public static int showConfirmDeletion(File file) {
 		int choice = JOptionPane.showConfirmDialog(null, 
 				"Do you really want to DEFINITIVELY delete this file : " + file + " ?",
 				"Files Tracker - Delete file",

@@ -31,7 +31,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 			return panel;
 		}
 
-		//		node.setColor(Color.BLACK); //FIXME
+		node.setColor(Color.BLACK);
 
 		//Empty file
 		if(node.getChildCount() == 1 && ((CustomNode) node.getFirstChild()).isEmpty() || node.isEmpty()) {
@@ -40,15 +40,15 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		else {
 			//Recently modified
-			if(Utils.isOlder(node.lastModifiedDate(), Storage.getData(Data.MODIFIED_TIME_DAY)) 
-					&& Boolean.valueOf(Storage.getData(Data.SHOW_MODIFIED))) {
+			if(Utils.isOlder(node.lastModifiedDate(), Storage.get(Data.MODIFIED_TIME_DAY)) 
+					&& Boolean.valueOf(Storage.get(Data.SHOW_MODIFIED))) {
 				node.setColor(new Color(255, 128, 0));
 			}
 
 			//Recently created
 			if(node.createdDate() != null
-					&& Utils.isOlder(node.createdDate(), Storage.getData(Data.CREATED_TIME_DAY)) 
-					&& Boolean.valueOf(Storage.getData(Data.SHOW_CREATED))) {
+					&& Utils.isOlder(node.createdDate(), Storage.get(Data.CREATED_TIME_DAY)) 
+					&& Boolean.valueOf(Storage.get(Data.SHOW_CREATED))) {
 				node.setColor(new Color(0, 100, 0));
 			}
 		}
@@ -56,7 +56,12 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 		//Set the same color for all its parents
 		if(node.getColor() != Color.BLACK && node.getColor() != Color.GRAY) {
 			for(TreeNode parent : node.getPath()) {
-				((CustomNode) parent).setColor(node.getColor());
+				CustomNode cuParent = (CustomNode) parent;
+				//Change color only if it has not already change
+				if(cuParent.getColor() == Color.BLACK || cuParent.getColor() == Color.GRAY) {
+					cuParent.setColor(node.getColor());
+					System.err.println("Changing color to " + cuParent.getFile() + " | " + cuParent.getColor());
+				}
 			}
 		}
 

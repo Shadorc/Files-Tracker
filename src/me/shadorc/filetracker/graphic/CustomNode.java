@@ -22,7 +22,7 @@ public class CustomNode extends DefaultMutableTreeNode {
 	private ImageIcon icon;
 	private Color color;
 
-	CustomNode(Object userObject, File file) {
+	public CustomNode(Object userObject, File file) {
 		super(userObject);
 
 		this.file = file;
