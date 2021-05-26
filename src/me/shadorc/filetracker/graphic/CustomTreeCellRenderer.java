@@ -54,7 +54,6 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
                 //Change color only if it has not already change
                 if (cuParent.getColor() == Color.BLACK || cuParent.getColor() == Color.GRAY) {
                     cuParent.setColor(node.getColor());
-                    System.err.println("Changing color to " + cuParent.getFile() + " | " + cuParent.getColor());
                 }
             }
         }
