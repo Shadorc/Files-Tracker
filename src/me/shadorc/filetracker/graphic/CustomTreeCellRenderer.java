@@ -35,14 +35,14 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
         } else {
             //Recently modified
             if (Utils.isOlder(node.lastModifiedDate(), Storage.get(Data.MODIFIED_TIME_DAY))
-                    && Boolean.valueOf(Storage.get(Data.SHOW_MODIFIED))) {
+                    && Boolean.parseBoolean(Storage.get(Data.SHOW_MODIFIED))) {
                 node.setColor(new Color(255, 128, 0));
             }
 
             //Recently created
             if (node.createdDate() != null
                     && Utils.isOlder(node.createdDate(), Storage.get(Data.CREATED_TIME_DAY))
-                    && Boolean.valueOf(Storage.get(Data.SHOW_CREATED))) {
+                    && Boolean.parseBoolean(Storage.get(Data.SHOW_CREATED))) {
                 node.setColor(new Color(0, 100, 0));
             }
         }

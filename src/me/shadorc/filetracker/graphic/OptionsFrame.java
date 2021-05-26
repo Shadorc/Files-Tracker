@@ -6,21 +6,17 @@ import me.shadorc.filetracker.Storage.Data;
 import me.shadorc.filetracker.Utils;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 public class OptionsFrame extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private JPanel mainPanel;
-
     OptionsFrame() {
         super("Files Tracker - Options");
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
-        mainPanel = new JPanel(new GridLayout(2, 1));
+        JPanel mainPanel = new JPanel(new GridLayout(2, 1));
 
         JPanel spinners = new JPanel(new GridLayout(2, 1));
         spinners.add(this.createOption("Consider a file as new if it was created less than", Data.CREATED_TIME_DAY));
@@ -49,12 +45,9 @@ public class OptionsFrame extends JFrame {
         int value = (Storage.get(data) == null) ? 0 : Integer.parseInt(Storage.get(data));
 
         JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, 0, 365, 1));
-        spinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                Storage.save(data, spinner.getValue());
-                Main.updateFrame();
-            }
+        spinner.addChangeListener(e -> {
+            Storage.save(data, spinner.getValue());
+            Main.updateFrame();
         });
 
         JPanel spinnerPanel = new JPanel(new GridLayout(1, 2));
@@ -69,14 +62,11 @@ public class OptionsFrame extends JFrame {
     }
 
     private JCheckBox createBox(String desc, Data data) {
-        boolean value = Storage.get(data) == null ? true : Boolean.parseBoolean(Storage.get(data));
+        boolean value = Storage.get(data) == null || Boolean.parseBoolean(Storage.get(data));
         JCheckBox box = new JCheckBox(desc, value);
-        box.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                Storage.save(data, box.isSelected());
-                Main.updateFrame();
-            }
+        box.addChangeListener(e -> {
+            Storage.save(data, box.isSelected());
+            Main.updateFrame();
         });
         return box;
     }

@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class CustomScrollBarUI extends MetalScrollBarUI {
 
-    private Image imageThumb;
+    private final Image imageThumb;
 
     CustomScrollBarUI() {
         this.imageThumb = new ImageIcon(this.getClass().getResource("/res/scrollbar.png")).getImage();

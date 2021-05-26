@@ -15,7 +15,7 @@ public class CustomNode extends DefaultMutableTreeNode {
 
     private static final long serialVersionUID = 1L;
 
-    public static CustomNode EMPTY_NODE = new CustomNode("(Empty)");
+    public static final CustomNode EMPTY_NODE = new CustomNode("(Empty)");
 
     private File file;
     private ImageIcon icon;

@@ -34,14 +34,12 @@ public class Utils {
     }
 
     public static int showConfirmDeletion(File file) {
-        int choice = JOptionPane.showConfirmDialog(null,
+        return JOptionPane.showConfirmDialog(null,
                 "Do you really want to DEFINITIVELY delete this file : " + file + " ?",
                 "Files Tracker - Delete file",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 ICON);
-
-        return choice;
     }
 
     public static void showErrorDialog(Exception err, String message) {
@@ -62,7 +60,7 @@ public class Utils {
         }
     }
 
-    public static boolean delete(File file) {
+    public static void delete(File file) {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
@@ -75,7 +73,7 @@ public class Utils {
                 }
             }
         }
-        return file.delete();
+        file.delete();
     }
 
     public static void collapseAll(JTree tree, TreePath path) {

@@ -13,12 +13,11 @@ public class Storage {
         MODIFIED_TIME_DAY,
         SHOW_CREATED,
         SHOW_MODIFIED,
-        SHOW_SYSTEM_DIR;
+        SHOW_SYSTEM_DIR
     }
 
     public static void init() throws IOException {
-        if (!CONFIG_FILE.exists()) {
-            CONFIG_FILE.createNewFile();
+        if (CONFIG_FILE.createNewFile()) {
             Storage.save(Data.MODIFIED_TIME_DAY, 1);
             Storage.save(Data.CREATED_TIME_DAY, 1);
             Storage.save(Data.SHOW_MODIFIED, true);
