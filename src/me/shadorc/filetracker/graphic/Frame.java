@@ -10,15 +10,17 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Frame extends JFrame {
 
-    private static final long serialVersionUID = 1L;
-
-    private HashMap<File, CustomNode> directories;
-    private long startTime, lastUpdate;
-    private int filesCount;
+    private Map<File, CustomNode> directories;
+    private long startTime;
+    private long lastUpdate;
+    private int fileCount;
     private boolean isSearching;
 
     private final JPanel mainPanel;
@@ -40,20 +42,25 @@ public class Frame extends JFrame {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setOpaque(false);
 
-        final File defaultFile = Utils.getDefaultDisk();
+        final File diskFile = Utils.getDefaultDisk();
+        if (diskFile == null) {
+            Utils.showErrorDialog(null, "No default filesystem root found");
+            System.exit(-1);
+        }
 
-        JTextField jtf = new JTextField(defaultFile.getPath());
+        JTextField jtf = new JTextField(diskFile.getPath());
         topPanel.add(jtf, BorderLayout.CENTER);
 
         JPanel buttonsPanel = new JPanel(new GridLayout(1, 4));
 
-        JButton browseButton = this.createBu("Browse", e -> {
+        JButton browseButton = this.createButton("Browse", event -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception ignored) {
+            } catch (Exception err) {
+                err.printStackTrace();
             }
 
-            JFileChooser chooser = new JFileChooser(defaultFile);
+            JFileChooser chooser = new JFileChooser(diskFile);
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
             int choice = chooser.showOpenDialog(Frame.this);
@@ -63,26 +70,30 @@ public class Frame extends JFrame {
 
             try {
                 UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            } catch (Exception ignored) {
+            } catch (Exception err) {
+                err.printStackTrace();
             }
         });
         buttonsPanel.add(browseButton);
 
-        this.scanButton = this.createBu("Scan", e -> {
+        this.scanButton = this.createButton("Scan", event -> {
             if (!isSearching) {
                 File folder = new File(jtf.getText());
                 if (!folder.exists()) {
-                    Utils.showErrorDialog(null, "Sorry, the selected path is not a directory or does not exist");
+                    Utils.showErrorDialog(null, "The selected path does not exist");
                     return;
                 }
                 Frame.this.start(folder);
             }
-            Frame.this.switchBu();
+            Frame.this.switchButton();
         });
         buttonsPanel.add(scanButton);
 
-        JButton collapse = this.createBu("Collapse", e -> {
-            if (tree == null) return;
+        JButton collapse = this.createButton("Collapse", event -> {
+            if (tree == null) {
+                return;
+            }
+
             //We remove UI during the operation to save A LOT of times
             tree.setUI(null);
             Utils.collapseAll(tree, new TreePath(tree.getModel().getRoot()));
@@ -91,13 +102,14 @@ public class Frame extends JFrame {
         });
         buttonsPanel.add(collapse);
 
-        JButton options = this.createBu("Options", e -> optionsFrame.setVisible(true));
+        JButton options = this.createButton("Options", event -> optionsFrame.setVisible(true));
         buttonsPanel.add(options);
 
         topPanel.add(buttonsPanel, BorderLayout.EAST);
         mainPanel.add(topPanel, BorderLayout.PAGE_START);
 
-        JLabel loading = new JLabel("", new ImageIcon(this.getClass().getResource("/res/large-icon.png")), JLabel.CENTER);
+        URL loadingUrl = Objects.requireNonNull(this.getClass().getResource("/res/large-icon.png"));
+        JLabel loading = new JLabel("", new ImageIcon(loadingUrl), JLabel.CENTER);
         mainPanel.add(loading, BorderLayout.CENTER);
 
         /*
@@ -106,15 +118,18 @@ public class Frame extends JFrame {
         JPanel keysPanel = new JPanel(new GridLayout(17, 1));
         keysPanel.setBorder(new CompoundBorder(BorderFactory.createTitledBorder("Keys"), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
-        JLabel normalFile = new JLabel("Normal", new ImageIcon(this.getClass().getResource("/res/file-icon.png")), JLabel.LEFT);
+        URL normalFileIcon = Objects.requireNonNull(this.getClass().getResource("/res/file-icon.png"));
+        JLabel normalFile = new JLabel("Normal", new ImageIcon(normalFileIcon), JLabel.LEFT);
         normalFile.setFont(Utils.DEFAULT_FONT);
         keysPanel.add(normalFile);
 
-        JLabel hiddenFile = new JLabel("Hidden", new ImageIcon(this.getClass().getResource("/res/file-icon-hidden.png")), JLabel.LEFT);
+        URL hiddenFileIcon = Objects.requireNonNull(this.getClass().getResource("/res/file-icon-hidden.png"));
+        JLabel hiddenFile = new JLabel("Hidden", new ImageIcon(hiddenFileIcon), JLabel.LEFT);
         hiddenFile.setFont(Utils.DEFAULT_FONT);
         keysPanel.add(hiddenFile);
 
-        JLabel lockedFile = new JLabel("System", new ImageIcon(this.getClass().getResource("/res/file-icon-locked.png")), JLabel.LEFT);
+        URL lockedFileIcon = Objects.requireNonNull(this.getClass().getResource("/res/file-icon-locked.png"));
+        JLabel lockedFile = new JLabel("System", new ImageIcon(lockedFileIcon), JLabel.LEFT);
         lockedFile.setFont(Utils.DEFAULT_FONT);
         keysPanel.add(lockedFile);
 
@@ -157,36 +172,41 @@ public class Frame extends JFrame {
     }
 
     private void start(File rootFile) {
-        new Thread(() -> {
-            directories = new HashMap<>();
-            startTime = System.currentTimeMillis();
-            filesCount = 0;
+        directories = new HashMap<>();
+        startTime = System.currentTimeMillis();
+        fileCount = 0;
 
-            CustomNode rootNode = new CustomNode(rootFile.getPath(), rootFile);
-            directories.put(rootFile, rootNode);
+        CustomNode rootNode = new CustomNode(rootFile.getPath(), rootFile);
+        directories.put(rootFile, rootNode);
 
-            //Remove the loading icon
-            BorderLayout layout = (BorderLayout) mainPanel.getLayout();
-            mainPanel.remove(layout.getLayoutComponent(BorderLayout.CENTER));
+        // Remove the loading icon
+        BorderLayout layout = (BorderLayout) mainPanel.getLayout();
+        mainPanel.remove(layout.getLayoutComponent(BorderLayout.CENTER));
 
-            tree = new CustomTree(rootNode);
-            JScrollPane jsp = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            jsp.getVerticalScrollBar().setUI(new CustomScrollBarUI());
-            jsp.getHorizontalScrollBar().setUI(new CustomScrollBarUI());
-            mainPanel.add(jsp, BorderLayout.CENTER);
+        tree = new CustomTree(rootNode);
+        JScrollPane jsp = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        jsp.getVerticalScrollBar().setUI(new CustomScrollBarUI());
+        jsp.getHorizontalScrollBar().setUI(new CustomScrollBarUI());
+        mainPanel.add(jsp, BorderLayout.CENTER);
 
+        Thread thread = new Thread(() -> {
             Frame.this.search(rootFile);
-            if (isSearching) Frame.this.switchBu();
-        }).start();
+            if (isSearching) {
+                Frame.this.switchButton();
+            }
+        });
+        thread.start();
     }
 
     private void search(File parent) {
         File[] files = parent.listFiles();
         if (isSearching && files != null) {
             for (File child : files) {
-                //We check if file exists because there's some very weird bugs with $Recycle.Bin for example
-                if (!child.exists() || (Utils.isSystemFile(child) && !Boolean.parseBoolean(Storage.get(Data.SHOW_SYSTEM_DIR))))
+                // We check if file exists because there's some very weird bugs with $Recycle.Bin for example
+                if (!child.exists() || (Utils.isSystemFile(child) && !Storage.getBool(Data.SHOW_SYSTEM_DIR))) {
                     continue;
+                }
+
                 this.addFile(parent, child);
                 if (child.isDirectory()) {
                     this.search(child);
@@ -198,29 +218,35 @@ public class Frame extends JFrame {
     private void addFile(File parent, File child) {
         tree.expandPath(new TreePath(tree.getModel().getRoot()));
 
-        String size = child.isFile() ? "(" + Utils.toReadableByteCount(child.length()) + ")" : "";
-        CustomNode childNode = new CustomNode(child.getName() + " " + size, child);
+        StringBuilder name = new StringBuilder(child.getName());
+        if (child.isFile()) {
+            name.append(' ')
+                    .append('(')
+                    .append(Utils.toReadableByteCount(child.length()))
+                    .append(')');
+        }
+        CustomNode childNode = new CustomNode(name.toString(), child);
 
         tree.add(directories.get(parent), childNode);
 
         if (child.isDirectory()) {
             directories.put(child, childNode);
 
-            //If the directory is empty
-            File[] listFiles = child.listFiles();
-            if (listFiles == null || listFiles.length == 0) {
+            // If the directory is empty
+            File[] files = child.listFiles();
+            if (files == null || files.length == 0) {
                 tree.add(childNode, (CustomNode) CustomNode.EMPTY_NODE.clone());
             }
         }
 
-        filesCount++;
+        fileCount++;
         if ((System.currentTimeMillis() - lastUpdate) >= 100) {
-            infoLabel.setText(filesCount + " files analyzed in " + String.format("%.1f", (System.currentTimeMillis() - startTime) / 1000.0) + "s.");
+            infoLabel.setText(String.format("%d files analyzed in %.1fs.", fileCount, (System.currentTimeMillis() - startTime) / 1000.0));
             lastUpdate = System.currentTimeMillis();
         }
     }
 
-    private JButton createBu(String text, ActionListener listener) {
+    private JButton createButton(String text, ActionListener listener) {
         JButton button = new JButton(text);
         button.setFocusable(false);
         button.setFont(Utils.DEFAULT_FONT);
@@ -230,7 +256,7 @@ public class Frame extends JFrame {
         return button;
     }
 
-    private void switchBu() {
+    private void switchButton() {
         scanButton.setText(isSearching ? "Scan" : "Stop");
         isSearching = !isSearching;
     }

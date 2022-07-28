@@ -10,9 +10,7 @@ import java.awt.*;
 
 public class OptionsFrame extends JFrame {
 
-    private static final long serialVersionUID = 1L;
-
-    OptionsFrame() {
+    protected OptionsFrame() {
         super("Files Tracker - Options");
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
@@ -42,8 +40,7 @@ public class OptionsFrame extends JFrame {
         label.setFont(Utils.DEFAULT_FONT);
         panel.add(label, BorderLayout.CENTER);
 
-        int value = (Storage.get(data) == null) ? 0 : Integer.parseInt(Storage.get(data));
-
+        long value = Storage.getDuration(data).toDays();
         JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, 0, 365, 1));
         spinner.addChangeListener(e -> {
             Storage.save(data, spinner.getValue());
@@ -62,7 +59,7 @@ public class OptionsFrame extends JFrame {
     }
 
     private JCheckBox createBox(String desc, Data data) {
-        boolean value = Storage.get(data) == null || Boolean.parseBoolean(Storage.get(data));
+        boolean value = Storage.getBool(data);
         JCheckBox box = new JCheckBox(desc, value);
         box.addChangeListener(e -> {
             Storage.save(data, box.isSelected());

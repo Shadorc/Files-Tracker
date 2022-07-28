@@ -1,6 +1,7 @@
 package me.shadorc.filetracker;
 
 import java.io.*;
+import java.time.Duration;
 import java.util.Properties;
 
 public class Storage {
@@ -9,64 +10,58 @@ public class Storage {
     private static final File CONFIG_FILE = new File("config.properties");
 
     public enum Data {
-        CREATED_TIME_DAY,
-        MODIFIED_TIME_DAY,
-        SHOW_CREATED,
-        SHOW_MODIFIED,
-        SHOW_SYSTEM_DIR
-    }
+        CREATED_TIME_DAY(1),
+        MODIFIED_TIME_DAY(1),
+        SHOW_CREATED(true),
+        SHOW_MODIFIED(true),
+        SHOW_SYSTEM_DIR(false);
 
-    public static void init() throws IOException {
-        if (CONFIG_FILE.createNewFile()) {
-            Storage.save(Data.MODIFIED_TIME_DAY, 1);
-            Storage.save(Data.CREATED_TIME_DAY, 1);
-            Storage.save(Data.SHOW_MODIFIED, true);
-            Storage.save(Data.SHOW_CREATED, true);
-            Storage.save(Data.SHOW_SYSTEM_DIR, false);
+        private final Object defaultValue;
+
+        Data(Object defaultValue) {
+            this.defaultValue = defaultValue;
+        }
+
+        public Object getDefaultValue() {
+            return defaultValue;
         }
     }
 
-    public static void save(Data data, Object value) {
-        OutputStream output = null;
-
+    public static <T> void save(Data data, T value) {
         try {
-            output = new FileOutputStream(CONFIG_FILE);
+            CONFIG_FILE.createNewFile();
+        } catch (IOException err) {
+            err.printStackTrace();
+        }
 
+        try (OutputStream out = new FileOutputStream(CONFIG_FILE)) {
             PROPERTIES.setProperty(data.toString(), value.toString());
-            PROPERTIES.store(output, null);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        } finally {
-            try {
-                if (output != null) output.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            PROPERTIES.store(out, null);
+        } catch (IOException err) {
+            err.printStackTrace();
         }
     }
 
-    public static String get(Data data) {
-        InputStream input = null;
-
-        try {
-            input = new FileInputStream(CONFIG_FILE);
-            PROPERTIES.load(input);
-
-            return PROPERTIES.getProperty(data.toString());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        } finally {
-            try {
-                if (input != null) input.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    private static String get(Data data) {
+        if (!CONFIG_FILE.exists()) {
+            return data.getDefaultValue().toString();
         }
 
-        return null;
+        try (InputStream input = new FileInputStream(CONFIG_FILE)) {
+            PROPERTIES.load(input);
+            return PROPERTIES.getProperty(data.toString(), data.getDefaultValue().toString());
+        } catch (IOException err) {
+            err.printStackTrace();
+        }
+
+        return data.getDefaultValue().toString();
+    }
+
+    public static Duration getDuration(Data data) {
+        return Duration.ofDays(Long.parseLong(Storage.get(data)));
+    }
+
+    public static boolean getBool(Data data) {
+        return Boolean.parseBoolean(Storage.get(data));
     }
 }

@@ -9,13 +9,13 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import java.awt.*;
+import java.time.LocalDateTime;
 
 public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+    public Component getTreeCellRendererComponent(
+            JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
         JPanel panel = new JPanel();
         panel.setBackground(selected ? Color.LIGHT_GRAY : null);
@@ -33,16 +33,19 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
         if (node.getChildCount() == 1 && ((CustomNode) node.getFirstChild()).isEmpty() || node.isEmpty()) {
             node.setColor(Color.GRAY);
         } else {
-            //Recently modified
-            if (Utils.isOlder(node.lastModifiedDate(), Storage.get(Data.MODIFIED_TIME_DAY))
-                    && Boolean.parseBoolean(Storage.get(Data.SHOW_MODIFIED))) {
+            // Recently modified
+            final LocalDateTime lastModified = node.lastModifiedDate();
+            if (lastModified != null
+                    && Utils.isOlder(lastModified, Storage.getDuration(Data.MODIFIED_TIME_DAY))
+                    && Storage.getBool(Data.SHOW_MODIFIED)) {
                 node.setColor(new Color(255, 128, 0));
             }
 
             //Recently created
-            if (node.createdDate() != null
-                    && Utils.isOlder(node.createdDate(), Storage.get(Data.CREATED_TIME_DAY))
-                    && Boolean.parseBoolean(Storage.get(Data.SHOW_CREATED))) {
+            final LocalDateTime lastCreated = node.createdDate();
+            if (lastCreated != null
+                    && Utils.isOlder(lastCreated, Storage.getDuration(Data.CREATED_TIME_DAY))
+                    && Storage.getBool(Data.SHOW_CREATED)) {
                 node.setColor(new Color(0, 100, 0));
             }
         }

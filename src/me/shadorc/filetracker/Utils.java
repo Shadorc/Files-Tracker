@@ -3,39 +3,53 @@ package me.shadorc.filetracker;
 import me.shadorc.filetracker.graphic.CustomNode;
 
 import javax.swing.*;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.DosFileAttributeView;
-import java.util.Date;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Enumeration;
+import java.util.Objects;
 
 public class Utils {
 
-    public final static ImageIcon ICON = new ImageIcon(Utils.class.getResource("/res/icon.png"));
+    public final static ImageIcon ICON = new ImageIcon(Objects.requireNonNull(
+            Utils.class.getResource("/res/icon.png")));
     public final static Font DEFAULT_FONT = new Font("Tahoma", Font.PLAIN, 12);
 
     public static File getDefaultDisk() {
-        for (File file : File.listRoots()) {
+        File[] roots = File.listRoots();
+
+        if (roots == null || roots.length == 0) {
+            return null;
+        }
+
+        for (File file : roots) {
             if (file.listFiles() != null) {
                 return file;
             }
         }
-        return null;
+
+        return roots[0];
     }
 
     public static String toReadableByteCount(long bytes) {
-        if (bytes < 1000) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(1000));
+        int unit = 1024;
+        if (bytes < unit) {
+            return String.format("%d B", bytes);
+        }
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
         char pre = "kMGTPE".charAt(exp - 1);
-        return String.format("%.1f %sB", bytes / Math.pow(1000, exp), pre);
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
     public static int showConfirmDeletion(File file) {
         return JOptionPane.showConfirmDialog(null,
-                "Do you really want to DEFINITIVELY delete this file : " + file + " ?",
+                "Do you really want to DEFINITIVELY delete this file: " + file + " ?",
                 "Files Tracker - Delete file",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
@@ -43,12 +57,16 @@ public class Utils {
     }
 
     public static void showErrorDialog(Exception err, String message) {
-        JOptionPane.showMessageDialog(null, message, "Files Tracker - Error", JOptionPane.ERROR_MESSAGE, ICON);
-        if (err != null) err.printStackTrace();
+        JOptionPane.showMessageDialog(
+                null, message, "Files Tracker - Error", JOptionPane.ERROR_MESSAGE, ICON);
+
+        if (err != null) {
+            err.printStackTrace();
+        }
     }
 
-    public static boolean isOlder(Date date, String time) {
-        return Math.abs((new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24)) <= Integer.parseInt(time);
+    public static boolean isOlder(LocalDateTime date, Duration duration) {
+        return Duration.between(date, LocalDateTime.now()).compareTo(duration) <= 0;
     }
 
     public static boolean isSystemFile(File file) {
@@ -56,39 +74,43 @@ public class Utils {
             DosFileAttributeView dosAttr = Files.getFileAttributeView(file.toPath(), DosFileAttributeView.class);
             return dosAttr.readAttributes().isSystem();
         } catch (IOException e) {
-            return false; //DosFileAttributeView not supported
+            return false; // DosFileAttributeView not supported
         }
     }
 
-    public static void delete(File file) {
+    public static boolean delete(File file) {
+        boolean success = true;
+
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
-                for (File f : files) {
-                    if (f.isDirectory()) {
-                        Utils.delete(f);
+                for (File subFile : files) {
+                    if (subFile.isDirectory()) {
+                        Utils.delete(subFile);
                     } else {
-                        f.delete();
+                        success &= subFile.delete();
                     }
                 }
             }
         }
-        file.delete();
+
+        success &= file.delete();
+        return success;
     }
 
-    public static void collapseAll(JTree tree, TreePath path) {
-        CustomNode node = (CustomNode) path.getLastPathComponent();
+    public static void collapseAll(JTree tree, TreePath parentPath) {
+        CustomNode parentNode = (CustomNode) parentPath.getLastPathComponent();
 
-        if (node.getChildCount() >= 0) {
-            Enumeration<?> enumeration = node.children();
+        if (parentNode.getChildCount() >= 0) {
+            Enumeration<TreeNode> enumeration = parentNode.children();
             while (enumeration.hasMoreElements()) {
-                CustomNode n = (CustomNode) enumeration.nextElement();
-                TreePath p = path.pathByAddingChild(n);
+                CustomNode subNode = (CustomNode) enumeration.nextElement();
+                TreePath subPath = parentPath.pathByAddingChild(subNode);
 
-                Utils.collapseAll(tree, p);
+                Utils.collapseAll(tree, subPath);
             }
         }
 
-        tree.collapsePath(path);
+        tree.collapsePath(parentPath);
     }
 }

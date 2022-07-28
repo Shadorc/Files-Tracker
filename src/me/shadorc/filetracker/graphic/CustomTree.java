@@ -15,8 +15,6 @@ import java.io.IOException;
 
 public class CustomTree extends JTree {
 
-    private static final long serialVersionUID = 1L;
-
     CustomTree(TreeNode root) {
         super(root);
 
@@ -39,8 +37,6 @@ public class CustomTree extends JTree {
                         menu.setBackground(Color.WHITE);
 
                         JMenuItem openItem = new JMenuItem(new AbstractAction("Open folder") {
-                            private static final long serialVersionUID = 1L;
-
                             public void actionPerformed(ActionEvent event) {
                                 if (Desktop.isDesktopSupported()) {
                                     try {
@@ -57,11 +53,9 @@ public class CustomTree extends JTree {
                         menu.add(openItem);
 
                         JMenuItem deleteItem = new JMenuItem(new AbstractAction("Delete") {
-                            private static final long serialVersionUID = 1L;
-
                             public void actionPerformed(ActionEvent event) {
                                 if (Utils.isSystemFile(file)) {
-                                    Utils.showErrorDialog(null, "Deleting a system file is not allowed.");
+                                    Utils.showErrorDialog(null, "Deleting a system file is not allowed");
                                 } else if (Utils.showConfirmDeletion(file) == JOptionPane.YES_OPTION) {
                                     Utils.delete(file);
                                     ((DefaultTreeModel) CustomTree.this.getModel()).removeNodeFromParent(node);
@@ -83,12 +77,14 @@ public class CustomTree extends JTree {
     public void add(CustomNode parent, CustomNode child) {
         DefaultTreeModel model = (DefaultTreeModel) this.getModel();
 
-        //Directories are displayed at the top and files at the bottom
+        // Directories are displayed at the top and files at the bottom
         int index = parent.getChildCount();
         if (child.getFile() != null && child.getFile().isDirectory()) {
             index = 0;
             for (int i = 0; i < parent.getChildCount(); i++) {
-                if (parent.getChildAt(i).getChildCount() == 0) break;
+                if (parent.getChildAt(i).getChildCount() == 0) {
+                    break;
+                }
                 index++;
             }
         }

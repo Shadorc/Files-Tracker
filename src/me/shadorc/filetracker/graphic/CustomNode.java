@@ -7,13 +7,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class CustomNode extends DefaultMutableTreeNode {
-
-    private static final long serialVersionUID = 1L;
 
     public static final CustomNode EMPTY_NODE = new CustomNode("(Empty)");
 
@@ -21,21 +22,30 @@ public class CustomNode extends DefaultMutableTreeNode {
     private ImageIcon icon;
     private Color color;
 
-    public CustomNode(Object userObject, File file) {
-        super(userObject);
+    public CustomNode(String name, File file) {
+        super(name);
 
         this.file = file;
         this.color = Color.BLACK;
 
-        String iconName = (file.isDirectory() ? "folder" : "file") + "-icon";
-        if (Utils.isSystemFile(file)) iconName += "-locked";
-        else if (file.isHidden()) iconName += "-hidden";
+        final StringBuilder iconName = new StringBuilder();
+        iconName.append(file.isDirectory() ? "folder" : "file");
+        iconName.append("-icon");
+        if (Utils.isSystemFile(file)) {
+            iconName.append("-locked");
+        } else if (file.isHidden()) {
+            iconName.append("-hidden");
+        }
 
-        this.icon = new ImageIcon(this.getClass().getResource("/res/" + iconName + ".png"));
+        final URL iconUrl = this.getClass().getResource(String.format("/res/%s.png", iconName));
+        if (iconUrl == null) {
+            throw new RuntimeException(String.format("Icon %s not found", iconName));
+        }
+        this.icon = new ImageIcon(iconUrl);
     }
 
-    public CustomNode(Object userObject) {
-        super(userObject);
+    public CustomNode(String name) {
+        super(name);
     }
 
     public File getFile() {
@@ -50,19 +60,26 @@ public class CustomNode extends DefaultMutableTreeNode {
         return color;
     }
 
-    public Date lastModifiedDate() {
-        return new Date(file.lastModified());
+    public LocalDateTime lastModifiedDate() {
+        return Instant.ofEpochMilli(file.lastModified())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
-    public Date createdDate() {
+    public LocalDateTime createdDate() {
         try {
             BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-            return new Date(attr.creationTime().toMillis());
-        } catch (IOException ignored) {
+            return Instant.ofEpochMilli(attr.creationTime().toMillis())
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+        } catch (IOException err) {
+            err.printStackTrace();
         }
+
         return null;
     }
 
+    // TODO: Based on name is not really consistent
     public boolean isEmpty() {
         return this.toString().equals(EMPTY_NODE.toString());
     }
