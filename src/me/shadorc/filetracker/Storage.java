@@ -27,7 +27,17 @@ public class Storage {
         }
     }
 
+    public static void init() throws IOException {
+        CONFIG_FILE.createNewFile();
+
+        try (InputStream input = new FileInputStream(CONFIG_FILE)) {
+            PROPERTIES.load(input);
+        }
+    }
+
     public static <T> void save(Data data, T value) {
+        PROPERTIES.setProperty(data.toString(), value.toString());
+
         try {
             CONFIG_FILE.createNewFile();
         } catch (IOException err) {
@@ -35,7 +45,6 @@ public class Storage {
         }
 
         try (OutputStream out = new FileOutputStream(CONFIG_FILE)) {
-            PROPERTIES.setProperty(data.toString(), value.toString());
             PROPERTIES.store(out, null);
         } catch (IOException err) {
             err.printStackTrace();
@@ -43,18 +52,7 @@ public class Storage {
     }
 
     private static String get(Data data) {
-        if (!CONFIG_FILE.exists()) {
-            return data.getDefaultValue().toString();
-        }
-
-        try (InputStream input = new FileInputStream(CONFIG_FILE)) {
-            PROPERTIES.load(input);
-            return PROPERTIES.getProperty(data.toString(), data.getDefaultValue().toString());
-        } catch (IOException err) {
-            err.printStackTrace();
-        }
-
-        return data.getDefaultValue().toString();
+        return PROPERTIES.getProperty(data.toString(), data.getDefaultValue().toString());
     }
 
     public static Duration getDuration(Data data) {
