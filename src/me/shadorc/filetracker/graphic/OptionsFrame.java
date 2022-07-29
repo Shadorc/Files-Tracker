@@ -29,7 +29,6 @@ public class OptionsFrame extends JFrame {
 
         this.setContentPane(mainPanel);
         this.pack();
-        this.setLocationRelativeTo(null);
         this.setIconImage(Utils.ICON.getImage());
     }
 

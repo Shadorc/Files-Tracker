@@ -102,7 +102,10 @@ public class Frame extends JFrame {
         });
         buttonsPanel.add(collapse);
 
-        JButton options = this.createButton("Options", event -> optionsFrame.setVisible(true));
+        JButton options = this.createButton("Options", event -> {
+            optionsFrame.setLocationRelativeTo(this);
+            optionsFrame.setVisible(true);
+        });
         buttonsPanel.add(options);
 
         topPanel.add(buttonsPanel, BorderLayout.EAST);
