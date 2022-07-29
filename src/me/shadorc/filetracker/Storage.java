@@ -58,7 +58,7 @@ public class Storage {
     }
 
     public static Duration getDuration(Data data) {
-        return Duration.ofDays(Long.parseLong(Storage.get(data)));
+        return Duration.ofDays((long) Double.parseDouble(Storage.get(data)));
     }
 
     public static boolean getBool(Data data) {
