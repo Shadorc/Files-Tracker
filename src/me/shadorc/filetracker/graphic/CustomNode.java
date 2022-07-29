@@ -15,10 +15,13 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CustomNode extends DefaultMutableTreeNode {
 
     public static final CustomNode EMPTY_NODE = new CustomNode("(Empty)");
+    private static final Map<String, ImageIcon> ICON_CACHE = new ConcurrentHashMap<>(6);
 
     private File file;
     private ImageIcon icon;
@@ -39,11 +42,14 @@ public class CustomNode extends DefaultMutableTreeNode {
             iconName.append("-hidden");
         }
 
-        final URL iconUrl = this.getClass().getResource(String.format("/res/%s.png", iconName));
-        if (iconUrl == null) {
-            throw new RuntimeException(String.format("Icon %s not found", iconName));
-        }
-        this.icon = new ImageIcon(iconUrl);
+        this.icon = ICON_CACHE.computeIfAbsent(String.format("/res/%s.png", iconName),
+                path -> {
+                    URL url = this.getClass().getResource(path);
+                    if (url == null) {
+                        throw new RuntimeException(String.format("Icon %s not found", path));
+                    }
+                    return new ImageIcon(url);
+                });
     }
 
     public CustomNode(String name) {
