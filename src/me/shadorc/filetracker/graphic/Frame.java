@@ -190,7 +190,8 @@ public class Frame extends JFrame {
         mainPanel.add(jsp, BorderLayout.CENTER);
 
         Thread thread = new Thread(() -> {
-            Frame.this.search(rootFile);
+            this.search(rootFile);
+
             if (isSearching) {
                 Frame.this.switchButton();
             }
@@ -228,6 +229,9 @@ public class Frame extends JFrame {
         CustomNode childNode = new CustomNode(name.toString(), child);
 
         tree.add(directories.get(parent), childNode);
+
+        // Color needs to be updated after insertion into the tree for proper parent's configuration
+        childNode.updateColor();
 
         if (child.isDirectory()) {
             directories.put(child, childNode);

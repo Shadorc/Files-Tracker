@@ -1,9 +1,11 @@
 package me.shadorc.filetracker.graphic;
 
+import me.shadorc.filetracker.Storage;
 import me.shadorc.filetracker.Utils;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -79,12 +81,40 @@ public class CustomNode extends DefaultMutableTreeNode {
         return null;
     }
 
-    // TODO: Based on name is not really consistent
-    public boolean isEmpty() {
-        return this.toString().equals(EMPTY_NODE.toString());
+    public void updateColor() {
+        Color color = this.color;
+
+        // Empty file
+        if (file.isDirectory() && (file.listFiles() == null || file.listFiles().length == 0)) {
+            color = Color.GRAY;
+        }
+        //Recently created
+        else if (this.createdDate() != null
+                && Utils.isOlder(this.createdDate(), Storage.getDuration(Storage.Data.CREATED_TIME_DAY))
+                && Storage.getBool(Storage.Data.SHOW_CREATED)) {
+            color = new Color(0, 100, 0);
+        }
+        // Recently modified
+        else if (this.lastModifiedDate() != null
+                && Utils.isOlder(this.lastModifiedDate(), Storage.getDuration(Storage.Data.MODIFIED_TIME_DAY))
+                && Storage.getBool(Storage.Data.SHOW_MODIFIED)) {
+            color = new Color(255, 128, 0);
+        }
+
+        this.setColor(color);
     }
 
-    public void setColor(Color color) {
+    private void setColor(Color color) {
         this.color = color;
+
+        if (color != Color.BLACK && color != Color.GRAY) {
+            // Set the same color for all its parents
+            for (TreeNode parent : this.getPath()) {
+                if (parent == this) {
+                    break;
+                }
+                ((CustomNode) parent).setColor(color);
+            }
+        }
     }
 }
