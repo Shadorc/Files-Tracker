@@ -38,7 +38,7 @@ public class Utils {
     }
 
     public static String toReadableByteCount(long bytes) {
-        int unit = 1024;
+        int unit = 1000;
         if (bytes < unit) {
             return String.format("%d B", bytes);
         }
