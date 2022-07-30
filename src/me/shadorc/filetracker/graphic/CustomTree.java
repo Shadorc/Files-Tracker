@@ -31,7 +31,7 @@ public class CustomTree extends JTree {
                     CustomNode node = (CustomNode) CustomTree.this.getLastSelectedPathComponent();
                     File file = (node.getFile() != null) ? node.getFile() : ((CustomNode) node.getParent()).getFile();
 
-                    //Open right click drop-down menu
+                    // Open right click drop-down menu
                     if (event.isPopupTrigger()) {
                         JPopupMenu menu = new JPopupMenu();
                         menu.setBackground(Color.WHITE);

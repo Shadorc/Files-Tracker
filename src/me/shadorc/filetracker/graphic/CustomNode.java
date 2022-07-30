@@ -21,6 +21,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CustomNode extends DefaultMutableTreeNode {
 
     public static final CustomNode EMPTY_NODE = new CustomNode("(Empty)");
+
+    public static final Color DEFAULT_COLOR = Color.BLACK;
+    public static final Color EMPTY_COLOR = Color.GRAY;
+    public static final Color RECENTLY_CREATED_COLOR = new Color(0, 100, 0);
+    public static final Color RECENTLY_MODIFIED_COLOR = new Color(255, 128, 0);
+
     private static final Map<String, ImageIcon> ICON_CACHE = new ConcurrentHashMap<>(6);
 
     private File file;
@@ -31,7 +37,7 @@ public class CustomNode extends DefaultMutableTreeNode {
         super(name);
 
         this.file = file;
-        this.color = Color.BLACK;
+        this.color = DEFAULT_COLOR;
 
         final StringBuilder iconName = new StringBuilder();
         iconName.append(file.isDirectory() ? "folder" : "file");
@@ -92,19 +98,19 @@ public class CustomNode extends DefaultMutableTreeNode {
 
         // Empty file
         if (file.isDirectory() && (file.listFiles() == null || file.listFiles().length == 0)) {
-            color = Color.GRAY;
+            color = EMPTY_COLOR;
         }
-        //Recently created
-        else if (this.createdDate() != null
-                && Utils.isOlder(this.createdDate(), Storage.getDuration(Storage.Data.CREATED_TIME_DAY))
-                && Storage.getBool(Storage.Data.SHOW_CREATED)) {
-            color = new Color(0, 100, 0);
+        // Recently created
+        else if (Storage.getBool(Storage.Data.SHOW_CREATED)
+                && this.createdDate() != null
+                && Utils.isOlder(this.createdDate(), Storage.getDuration(Storage.Data.CREATED_TIME_DAY))) {
+            color = RECENTLY_CREATED_COLOR;
         }
         // Recently modified
-        else if (this.lastModifiedDate() != null
-                && Utils.isOlder(this.lastModifiedDate(), Storage.getDuration(Storage.Data.MODIFIED_TIME_DAY))
-                && Storage.getBool(Storage.Data.SHOW_MODIFIED)) {
-            color = new Color(255, 128, 0);
+        else if (Storage.getBool(Storage.Data.SHOW_MODIFIED)
+                && this.lastModifiedDate() != null
+                && Utils.isOlder(this.lastModifiedDate(), Storage.getDuration(Storage.Data.MODIFIED_TIME_DAY))) {
+            color = RECENTLY_MODIFIED_COLOR;
         }
 
         this.setColor(color);
@@ -113,7 +119,7 @@ public class CustomNode extends DefaultMutableTreeNode {
     private void setColor(Color color) {
         this.color = color;
 
-        if (color != Color.BLACK && color != Color.GRAY) {
+        if (color != CustomNode.DEFAULT_COLOR && color != CustomNode.EMPTY_COLOR) {
             // Set the same color for all its parents
             for (TreeNode parent : this.getPath()) {
                 if (parent == this) {

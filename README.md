@@ -1,6 +1,7 @@
-# Files-Tracker
+# Files Tracker
 
-Prototype showing the file tree of a hard disk and displaying the recently modified/created files.  
+Use Files Tracker to keep an eye on your files.  
+Displaying system files, empty directories, recently modified and recently created files.  
 Tested on Windows 7 & 10.
 
-![Hello](https://i.imgur.com/7fuXmKI.png)
+![Example](https://i.imgur.com/7fuXmKI.png)

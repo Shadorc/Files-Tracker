@@ -29,7 +29,7 @@ public class Frame extends JFrame {
     private CustomTree tree;
 
     public Frame() {
-        super("Files Tracker - Beta");
+        super("Files Tracker");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         OptionsFrame optionsFrame = new OptionsFrame();
@@ -137,17 +137,17 @@ public class Frame extends JFrame {
         keysPanel.add(lockedFile);
 
         JLabel emptyFile = new JLabel("Empty");
-        emptyFile.setForeground(Color.GRAY);
+        emptyFile.setForeground(CustomNode.EMPTY_COLOR);
         emptyFile.setFont(Utils.DEFAULT_FONT);
         keysPanel.add(emptyFile);
 
         JLabel modifiedFile = new JLabel("Recently modified");
-        modifiedFile.setForeground(new Color(255, 128, 0));
+        modifiedFile.setForeground(CustomNode.RECENTLY_MODIFIED_COLOR);
         modifiedFile.setFont(Utils.DEFAULT_FONT);
         keysPanel.add(modifiedFile);
 
         JLabel createdFile = new JLabel("Recently created");
-        createdFile.setForeground(new Color(0, 100, 0));
+        createdFile.setForeground(CustomNode.RECENTLY_CREATED_COLOR);
         createdFile.setFont(Utils.DEFAULT_FONT);
         keysPanel.add(createdFile);
 
@@ -207,7 +207,7 @@ public class Frame extends JFrame {
         if (isSearching && files != null) {
             for (File child : files) {
                 // We check if file exists because there's some very weird bugs with $Recycle.Bin for example
-                if (!child.exists() || (Utils.isSystemFile(child) && !Storage.getBool(Data.SHOW_SYSTEM_DIR))) {
+                if (!child.exists() || (!Storage.getBool(Data.SHOW_SYSTEM_DIR) && Utils.isSystemFile(child))) {
                     continue;
                 }
 

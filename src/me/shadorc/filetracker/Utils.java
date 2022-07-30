@@ -40,15 +40,16 @@ public class Utils {
     }
 
     public static String toReadableByteCount(long bytes) {
-        if (-1000 < bytes && bytes < 1000) {
+        final int unit = 1000;
+        if (-unit < bytes && bytes < unit) {
             return bytes + " B";
         }
         CharacterIterator ci = new StringCharacterIterator("kMGTPE");
         while (bytes <= -999_950 || bytes >= 999_950) {
-            bytes /= 1000;
+            bytes /= unit;
             ci.next();
         }
-        return String.format("%.1f %cB", bytes / 1000.0, ci.current());
+        return String.format("%.1f %cB", bytes / (double) unit, ci.current());
     }
 
     public static int showConfirmDeletion(File file) {
